@@ -1436,7 +1436,7 @@ window.handleRealBarcodeScanned = async function (codeString, customNote) {
   const safeCode = cleanCode.replace(/'/g, "\\'");
   const safeName = productName.replace(/'/g, "\\'").replace(/"/g, '&quot;');
   const safeBrand = brandLabel.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-  const isExplorer = ((window.state && window.state.userRole) || 'Исследователь') !== 'Агент';
+  const isExplorer = !window.isSpecialAgentRole || !window.isSpecialAgentRole(window.state && window.state.userRole);
 
   if (resultCard) {
     resultCard.className = 'p-3.5 rounded-2xl border-2 border-emerald-400 bg-emerald-50/90 text-slate-900 block space-y-2.5';

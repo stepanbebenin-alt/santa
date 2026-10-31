@@ -950,7 +950,7 @@ window.updateAllUI = function () {
     }
   }
 
-  const isExplorer = (window.state.userRole || 'Наблюдатель') !== 'Агент';
+  const isExplorer = !isSpecialAgentRole(window.state.userRole);
   const navMissionsBtn = document.getElementById('navBtn-missions');
   if (navMissionsBtn) {
     if (isExplorer) {
@@ -1581,7 +1581,7 @@ function showReportModalUI() {
 
   const payload = window.currentModalPayload;
   const strikes = Math.max(0, Number(window.state.falseStrikes) || 0);
-  const isExplorer = (window.state.userRole || 'Наблюдатель') !== 'Агент';
+  const isExplorer = !isSpecialAgentRole(window.state.userRole);
   const isClaimType = payload.type !== 'mission' && payload.type !== 'fav_mission';
   const isTariffCut = strikes >= 3 && isClaimType && payload.points >= 2;
   const effectivePts = isTariffCut ? 1 : payload.points;
@@ -1687,7 +1687,7 @@ window.setMediaMode = function (mode) {
 window.submitReport = function (isFakeTest) {
   if (!window.currentModalPayload) return;
 
-  const isExplorer = (window.state.userRole || 'Наблюдатель') !== 'Агент';
+  const isExplorer = !isSpecialAgentRole(window.state.userRole);
 
   // Если аккаунт на карантине (5/5 страйков, доверие 0%), обычные отчеты заморожены до снятия карантина
   if (!isFakeTest && ((Number(window.state.falseStrikes) || 0) >= 5 || window.state.accountQuarantined)) {
@@ -2270,7 +2270,7 @@ window.selectStopModalBrand = function (brandName) {
 };
 
 window.openAddStopListModal = function (prefillBarcode = '', prefillProduct = '', prefillBrand = '') {
-  if ((window.state.userRole || 'Наблюдатель') !== 'Агент') {
+  if (!isSpecialAgentRole(window.state.userRole)) {
     showToast('Доступно только Спецагентам Санты', 'Вкладка «Красный лист» доступна только для роли Спецагент Санты.', 'error');
     return;
   }
@@ -2618,7 +2618,7 @@ window.resetStrikesDemo = function () {
 const TAB_ORDER = ['home', 'missions', 'scanner', 'stoplist', 'leaderboard', 'settings'];
 
 window.switchMainTab = function (tabKey) {
-  const isExplorer = (window.state.userRole || 'Наблюдатель') !== 'Агент';
+  const isExplorer = !isSpecialAgentRole(window.state.userRole);
   if ((tabKey === 'missions' || tabKey === 'stoplist') && isExplorer) {
     tabKey = 'home';
   }
@@ -2705,7 +2705,8 @@ window.setAppTheme = function (themeMode) {
 };
 
 window.toggleSettingSwitch = function (key) {
-  window.state[key] = !Boolean(window.state[key]);
+  const curVal = (key === 'largeTextMode') ? Boolean(window.state[key]) : (window.state[key] !== false);
+  window.state[key] = !curVal;
   if (key === 'soundEnabled') {
     window.soundEnabled = window.state.soundEnabled;
     const icon = document.getElementById('soundIcon');
@@ -3278,13 +3279,13 @@ window.closeOnboardingModal = function (forceGuest = false) {
 };
 
 window.selectOnboardingRole = function (role) {
-  window.state.userRole = role || 'Исследователь';
+  window.state.userRole = role || 'Наблюдатель';
   const agentCard = document.getElementById('roleCardAgent');
   const expCard = document.getElementById('roleCardExplorer');
   const agentCheck = document.getElementById('roleAgentCheck');
   const expCheck = document.getElementById('roleExplorerCheck');
 
-  if (window.state.userRole === 'Агент') {
+  if (isSpecialAgentRole(window.state.userRole)) {
     agentCard.className = 'p-2.5 rounded-2xl border-2 border-[#009FE3] bg-sky-50/70 text-left transition shadow-sm';
     expCard.className = 'p-2.5 rounded-2xl border-2 border-slate-200 bg-slate-50/70 text-left transition';
     agentCheck.className = 'fa-solid fa-circle-check text-[#009FE3] text-xs';
