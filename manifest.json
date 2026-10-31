@@ -1,0 +1,31 @@
+{
+  "name": "Скажи Санте — Народный контроль качества",
+  "short_name": "Скажи Санте",
+  "description": "Официальное приложение народного контроля качества холдинга Санта (Санта Ритейл, Бремор, Савушкин, Santa Rest & Hotels)",
+  "start_url": "./index.html?mode=standalone",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
+  "background_color": "#009FE3",
+  "theme_color": "#009FE3",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/logos/santa_retail.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/logos/santa_retail.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

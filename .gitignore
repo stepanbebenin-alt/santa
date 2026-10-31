@@ -1,0 +1,8 @@
+node_modules/
+scratch/
+.npm-global/
+.npm-cache/
+.npmrc
+.netlify/
+.DS_Store
+Thumbs.db

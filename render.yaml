@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: santa-radar
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 20.20.1
