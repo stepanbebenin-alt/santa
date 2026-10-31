@@ -1404,11 +1404,11 @@ window.renderBrandChecklists = function () {
           <div class="smooth-accordion-inner divide-y divide-slate-100/80 px-2 pb-1.5">
             ${filteredItems.map(item => `
               <button onclick="openIssueReportModal('${cfg.id}', '${item.id}')" class="w-full py-2.5 px-2.5 rounded-xl text-left hover:bg-slate-50 active:scale-[0.99] transition flex items-center justify-between gap-3 group">
-                <div class="flex items-center gap-2.5">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1 overflow-hidden">
                   <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[11px] text-white shadow-sm" style="background-color: ${item.critical ? '#E11D48' : cfg.headerBg};">
                     <i class="fa-solid ${item.critical ? 'fa-bolt' : item.isOther ? 'fa-pen' : 'fa-camera'}"></i>
                   </div>
-                  <span class="text-xs font-semibold text-slate-800 group-hover:text-slate-950 leading-snug">
+                  <span class="text-xs font-semibold text-slate-800 group-hover:text-slate-950 leading-snug min-w-0 flex-1 break-words">
                     ${item.label}
                   </span>
                 </div>
@@ -3259,10 +3259,18 @@ window.triggerFaceIdAuth = async function (mode) {
   }, 650);
 };
 
-window.closeOnboardingModal = function () {
+window.closeOnboardingModal = function (forceGuest = false) {
   if (!window.isSessionAuthenticated) {
-    showOnbPasswordError('Сначала выполните вход по паролю или через Face ID!');
-    return;
+    if (!window.state.userProfile || !window.state.userProfile.name) {
+      window.state.userProfile = {
+        name: 'Сотрудник Санта',
+        role: 'researcher',
+        subdivision: 'Санта Ритейл'
+      };
+      saveState();
+      updateAllUI();
+    }
+    window.isSessionAuthenticated = true;
   }
   window.smoothCloseModal('onboardingModal');
 };
