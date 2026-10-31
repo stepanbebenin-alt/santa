@@ -1,4 +1,10 @@
 
+function isSpecialAgentRole(role) {
+  const r = (role || (window.state && window.state.userRole) || '').trim();
+  return r === 'Спецагент Санты' || r === 'Агент';
+}
+window.isSpecialAgentRole = isSpecialAgentRole;
+
 // ============================================================================
 // PWA STANDALONE & NATIVE FULLSCREEN APP ENGINE (WITHOUT BROWSER SEARCH BAR)
 // ============================================================================
@@ -448,7 +454,7 @@ window.saveState = function () {
         id: window.state.userId,
         name: window.state.userName,
         division: window.state.userDivision || 'Холдинг Санта',
-        role: window.state.userRole || 'Исследователь',
+        role: window.state.userRole || 'Наблюдатель',
         favoriteStore: window.state.favoriteStore || '',
         points: window.state.points,
         strikes: window.state.falseStrikes,
@@ -481,7 +487,7 @@ window.confirmQuickZeroReset = function (openProfileAfter) {
   const prevEmail = window.state.userEmail || '';
   const prevPass = window.state.userPassword || '';
   const prevDiv = window.state.userDivision || 'Санта Ритейл';
-  const prevRole = window.state.userRole || 'Исследователь';
+  const prevRole = window.state.userRole || 'Наблюдатель';
   const prevStore = window.state.favoriteStore || window.state.currentStoreName || 'Санта • Минск, пр. Победителей, 65';
   const prevSettings = window.state.settings ? { ...window.state.settings } : undefined;
 
@@ -692,7 +698,7 @@ window.syncWithServer = async function (extraPayload = {}) {
         id: window.state.userId,
         name: window.state.userName,
         division: window.state.userDivision || 'Холдинг Санта',
-        role: window.state.userRole || 'Исследователь',
+        role: window.state.userRole || 'Наблюдатель',
         favoriteStore: window.state.favoriteStore || '',
         points: window.state.points,
         strikes: window.state.falseStrikes,
@@ -850,7 +856,7 @@ window.updateAllUI = function () {
       id: window.state.userId,
       name: window.state.userName,
       division: displayDiv,
-      role: window.state.userRole || 'Исследователь',
+      role: window.state.userRole || 'Наблюдатель',
       points: window.state.points,
       strikes: window.state.falseStrikes,
       hardMissions: window.state.hardMissionsDone || 0,
@@ -895,9 +901,9 @@ window.updateAllUI = function () {
       ? 'В минусе (штраф)'
       : ptsVal === 0
       ? '0 баллов • Старт'
-      : `#${userRank} место • ${window.state.userRole || 'Исследователь'}`;
+      : `#${userRank} место • ${window.state.userRole || 'Наблюдатель'}`;
   }
-  const roleVal = window.state.userRole || 'Исследователь';
+  const roleVal = window.state.userRole || 'Наблюдатель';
   document.getElementById('roleHeaderBadge').innerHTML = `<span>${roleVal}</span><i class="fa-solid fa-repeat text-[8px] opacity-80"></i>`;
   document.getElementById('headerUserSubtitle').textContent = window.state.userName
     ? `${window.state.userName} • ${window.state.userDivision}`
@@ -944,7 +950,7 @@ window.updateAllUI = function () {
     }
   }
 
-  const isExplorer = (window.state.userRole || 'Исследователь') !== 'Агент';
+  const isExplorer = (window.state.userRole || 'Наблюдатель') !== 'Агент';
   const navMissionsBtn = document.getElementById('navBtn-missions');
   if (navMissionsBtn) {
     if (isExplorer) {
@@ -995,7 +1001,7 @@ window.updateAllUI = function () {
   const banBarText = document.getElementById('banResetBarText');
 
   if (roleSanctionHdr) {
-    roleSanctionHdr.textContent = isExplorer ? 'Статус Исследователя' : 'Статус Агента';
+    roleSanctionHdr.textContent = isExplorer ? 'Статус Наблюдателя' : 'Статус Спецагента Санты';
   }
   if (rehabLabel) {
     rehabLabel.textContent = strikes > 0
@@ -1575,7 +1581,7 @@ function showReportModalUI() {
 
   const payload = window.currentModalPayload;
   const strikes = Math.max(0, Number(window.state.falseStrikes) || 0);
-  const isExplorer = (window.state.userRole || 'Исследователь') !== 'Агент';
+  const isExplorer = (window.state.userRole || 'Наблюдатель') !== 'Агент';
   const isClaimType = payload.type !== 'mission' && payload.type !== 'fav_mission';
   const isTariffCut = strikes >= 3 && isClaimType && payload.points >= 2;
   const effectivePts = isTariffCut ? 1 : payload.points;
@@ -1681,7 +1687,7 @@ window.setMediaMode = function (mode) {
 window.submitReport = function (isFakeTest) {
   if (!window.currentModalPayload) return;
 
-  const isExplorer = (window.state.userRole || 'Исследователь') !== 'Агент';
+  const isExplorer = (window.state.userRole || 'Наблюдатель') !== 'Агент';
 
   // Если аккаунт на карантине (5/5 страйков, доверие 0%), обычные отчеты заморожены до снятия карантина
   if (!isFakeTest && ((Number(window.state.falseStrikes) || 0) >= 5 || window.state.accountQuarantined)) {
@@ -2264,8 +2270,8 @@ window.selectStopModalBrand = function (brandName) {
 };
 
 window.openAddStopListModal = function (prefillBarcode = '', prefillProduct = '', prefillBrand = '') {
-  if ((window.state.userRole || 'Исследователь') !== 'Агент') {
-    showToast('Доступно только Агентам', 'Вкладка «Красный лист» недоступна для роли Исследователь.', 'error');
+  if ((window.state.userRole || 'Наблюдатель') !== 'Агент') {
+    showToast('Доступно только Спецагентам Санты', 'Вкладка «Красный лист» доступна только для роли Спецагент Санты.', 'error');
     return;
   }
   document.getElementById('stopBarcodeInput').value = prefillBarcode || '';
@@ -2482,9 +2488,9 @@ window.renderLeaderboardTab = function (allPlayers) {
       rankBadge = `<span class="w-6 h-6 rounded-full bg-amber-700/20 text-amber-900 font-black text-xs flex items-center justify-center">3</span>`;
     }
 
-    const rolePill = p.role === 'Агент'
-      ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-indigo-100 text-indigo-800">🕵️‍♂️ Агент</span>`
-      : `<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800">🔍 Исследователь</span>`;
+    const rolePill = isSpecialAgentRole(p.role)
+      ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-indigo-100 text-indigo-800">🕵️‍♂️ Спецагент Санты</span>`
+      : `<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800">👁️ Наблюдатель</span>`;
 
     const pStrikes = Number(p.strikes) || 0;
     const pTrust = Math.max(0, 100 - pStrikes * 20);
@@ -2612,7 +2618,7 @@ window.resetStrikesDemo = function () {
 const TAB_ORDER = ['home', 'missions', 'scanner', 'stoplist', 'leaderboard', 'settings'];
 
 window.switchMainTab = function (tabKey) {
-  const isExplorer = (window.state.userRole || 'Исследователь') !== 'Агент';
+  const isExplorer = (window.state.userRole || 'Наблюдатель') !== 'Агент';
   if ((tabKey === 'missions' || tabKey === 'stoplist') && isExplorer) {
     tabKey = 'home';
   }
@@ -2717,14 +2723,15 @@ window.toggleSettingSwitch = function (key) {
 };
 
 window.setSettingsRole = function (roleName) {
-  window.state.userRole = roleName;
+  const normalized = isSpecialAgentRole(roleName) ? 'Спецагент Санты' : 'Наблюдатель';
+  window.state.userRole = normalized;
   saveState();
   syncWithServer({});
   updateAllUI();
   playSound('success');
   showToast(
-    `Режим: ${roleName}`,
-    roleName === 'Исследователь'
+    `Режим: ${normalized}`,
+    normalized === 'Наблюдатель'
       ? 'Сигналы без лимитов (Миссии и Красный лист скрыты).'
       : 'Открыты вкладки эксклюзивных Миссий и Красного листа!',
     'info'
@@ -2833,7 +2840,7 @@ window.syncSettingsUI = function () {
   });
 
   // Роль в настройках
-  const isAgent = window.state.userRole === 'Агент';
+  const isAgent = isSpecialAgentRole(window.state.userRole);
   const roleExpBtn = document.getElementById('settingsRoleExplorer');
   const roleAgentBtn = document.getElementById('settingsRoleAgent');
   const expIcon = document.getElementById('settingsRoleExpIcon');
@@ -2924,7 +2931,7 @@ window.setGpsToFavorite = function () {
 };
 
 window.toggleUserRoleQuick = function () {
-  window.state.userRole = (window.state.userRole === 'Агент') ? 'Исследователь' : 'Агент';
+  window.state.userRole = isSpecialAgentRole(window.state.userRole) ? 'Наблюдатель' : 'Спецагент Санты';
   saveState();
   syncWithServer({});
   updateAllUI();
@@ -3077,7 +3084,7 @@ window.openOnboardingModal = function (isEditMode) {
       const nm = document.getElementById('loginSavedNameText');
       if (nm) nm.textContent = window.state.userName;
       const mt = document.getElementById('loginSavedMetaText');
-      if (mt) mt.textContent = `${window.state.userDivision || 'Санта Ритейл'} • ${window.state.userRole || 'Исследователь'}`;
+      if (mt) mt.textContent = `${window.state.userDivision || 'Санта Ритейл'} • ${window.state.userRole || 'Наблюдатель'}`;
     } else {
       savedBadge.classList.add('hidden');
     }
@@ -3090,13 +3097,8 @@ window.openOnboardingModal = function (isEditMode) {
 
   const delBtn = document.getElementById('onbDeleteProfileBtn');
   if (delBtn) {
-    if (window.state.onboarded || window.state.userName || window.state.userPassword) {
-      delBtn.classList.remove('hidden');
-      delBtn.classList.add('flex');
-    } else {
-      delBtn.classList.add('hidden');
-      delBtn.classList.remove('flex');
-    }
+    delBtn.classList.add('hidden');
+    delBtn.classList.remove('flex');
   }
 
   const faceBanner = document.getElementById('faceIdScannerBanner');
@@ -3120,7 +3122,7 @@ window.openOnboardingModal = function (isEditMode) {
     }
   }
 
-  selectOnboardingRole(window.state.userRole || 'Исследователь');
+  selectOnboardingRole(window.state.userRole || 'Наблюдатель');
   validateOnboardingButton();
 
   // Если уже есть сохраненный аккаунт с паролем и мы не в режиме редактирования — открываем плашку «Вход»
@@ -3325,7 +3327,7 @@ window.saveOnboardingProfile = function (viaFaceId) {
   const passVal = (document.getElementById('onbPasswordInput')?.value || '').trim();
   const divVal = window.state.userDivision || 'Санта Ритейл';
   const storeVal = (document.getElementById('onbFavStoreInput').value || '').trim() || window.state.currentStoreName || 'Санта • Минск, пр. Победителей, 65';
-  const roleVal = window.state.userRole || 'Исследователь';
+  const roleVal = window.state.userRole || 'Наблюдатель';
 
   if (!viaFaceId) {
     if (!passVal) {
@@ -3529,8 +3531,8 @@ window.addEventListener('DOMContentLoaded', function () {
   selectBrand(window.state.activeBrand || 'santa');
   backToBrandsHub();
   playSplashScreen();
-  // При каждом перезаходе в приложение всегда запрашиваем вход (по паролю или Face ID)
-  openOnboardingModal(false);
+  // Пользователь сразу попадает на главный экран
+  window.isSessionAuthenticated = true;
   startCountdownTimer();
   initCloudRealtimeSync();
   pollServerState();
