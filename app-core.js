@@ -1276,7 +1276,8 @@ window.backToBrandsHub = function (silentReset) {
   const hIcon = document.getElementById('headerBrandIcon');
   if (hIcon) hIcon.className = 'fa-solid fa-cart-shopping text-white text-sm';
   const headerLogoImg = document.getElementById('headerBrandLogoImg');
-  if (headerLogoImg) headerLogoImg.src = 'assets/logos/santa_retail.png';
+  const defaultSantaLogo = (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS.santa) || 'assets/logos/santa_retail.png';
+  if (headerLogoImg) headerLogoImg.src = defaultSantaLogo;
 
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
   if (backHomeBtn && window.state.activeTab === 'home') {
@@ -1304,7 +1305,7 @@ window.selectBrand = function (brandKey) {
 
   const hIcon = document.getElementById('headerBrandIcon');
   if (hIcon) hIcon.className = `fa-solid ${cfg.icon} text-white text-sm`;
-  const logoUrl = cfg.logoUrl || 'assets/logos/santa_retail.png';
+  const logoUrl = cfg.logoUrl || (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS[brandKey]) || (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS.santa) || 'assets/logos/santa_retail.png';
   const headerLogoImg = document.getElementById('headerBrandLogoImg');
   if (headerLogoImg) headerLogoImg.src = logoUrl;
   const activeLogoImg = document.getElementById('activeBrandLogoImg');
@@ -1545,7 +1546,7 @@ window.selectClaimModalBrand = function (brandName) {
   const brandLogoEl = document.getElementById('modalSelectedBrandLogo');
   if (brandLogoEl && window.BRAND_CONFIG) {
     const brandKey = Object.keys(window.BRAND_CONFIG).find(k => window.BRAND_CONFIG[k].name === brandName) || 'santa';
-    brandLogoEl.src = (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS[brandKey]) || 'assets/logos/santa_retail.png';
+    brandLogoEl.src = (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS[brandKey]) || (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS.santa) || 'assets/logos/santa_retail.png';
   }
 
   document.querySelectorAll('.claim-brand-tab').forEach(btn => {
