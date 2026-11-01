@@ -1,7 +1,5 @@
-const CACHE_NAME = 'santa-radar-v4';
+const CACHE_NAME = 'santa-radar-v6';
 const ASSETS = [
-  './',
-  './index.html',
   './manifest.json',
   './assets/logos/santa_retail.png'
 ];
@@ -28,8 +26,10 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone)).catch(() => {});
+        if (response && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone)).catch(() => {});
+        }
         return response;
       })
       .catch(() => caches.match(event.request))

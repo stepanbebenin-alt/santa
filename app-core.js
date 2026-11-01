@@ -447,7 +447,7 @@ window.renderBrandColoredBadges = function (brandStr) {
   }).join(' ');
 };
 
-window.saveState = function () {
+function saveState() {
   try {
     if (window.state.onboarded && window.state.userName) {
       window.state.participants[window.state.userId] = {
@@ -464,7 +464,8 @@ window.saveState = function () {
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(window.state));
   } catch (e) {}
-};
+}
+window.saveState = saveState;
 
 // Легкое окно сброса в 0 (без принудительного выброса на тяжелую анкету)
 window.resetToCleanOnboarding = function () {
@@ -476,7 +477,7 @@ window.resetToCleanOnboarding = function () {
   }
 };
 
-window.closeLightResetModal = function () {
+function closeLightResetModal() {
   window.smoothCloseModal('lightResetModal');
 };
 
@@ -562,7 +563,7 @@ window.openDeleteProfileModal = function () {
   }
 };
 
-window.closeDeleteProfileModal = function () {
+function closeDeleteProfileModal() {
   window.smoothCloseModal('deleteProfileConfirmModal');
 };
 
@@ -815,7 +816,7 @@ function applySharedDbToLocal(db) {
 }
 
 // --- ОТРИСОВКА ВСЕГО ИНТЕРФЕЙСА ---
-window.updateAllUI = function () {
+function updateAllUI() {
   const displayName = window.state.userName || 'Сотрудник';
   const displayDiv = window.state.userDivision || 'Холдинг Санта';
   const activeStore = window.state.currentStoreName || window.state.favoriteStore || 'Санта • Минск, пр. Победителей, 9';
@@ -904,6 +905,8 @@ window.updateAllUI = function () {
       : `#${userRank} место • ${window.state.userRole || 'Наблюдатель'}`;
   }
   const roleVal = window.state.userRole || 'Наблюдатель';
+  const msRoleEl = document.getElementById('missionsRoleStatusText');
+  if (msRoleEl) msRoleEl.textContent = roleVal;
   document.getElementById('roleHeaderBadge').innerHTML = `<span>${roleVal}</span><i class="fa-solid fa-repeat text-[8px] opacity-80"></i>`;
   document.getElementById('headerUserSubtitle').textContent = window.state.userName
     ? `${window.state.userName} • ${window.state.userDivision}`
@@ -953,29 +956,15 @@ window.updateAllUI = function () {
   const isExplorer = !isSpecialAgentRole(window.state.userRole);
   const navMissionsBtn = document.getElementById('navBtn-missions');
   if (navMissionsBtn) {
-    if (isExplorer) {
-      navMissionsBtn.classList.add('hidden');
-      if (window.state.activeTab === 'missions') {
-        switchMainTab('home');
-      }
-    } else {
-      navMissionsBtn.classList.remove('hidden');
-    }
+    navMissionsBtn.classList.remove('hidden');
   }
 
   const navStopListBtn = document.getElementById('navBtn-stoplist');
   if (navStopListBtn) {
-    if (isExplorer) {
-      navStopListBtn.classList.add('hidden');
-      if (window.state.activeTab === 'stoplist') {
-        switchMainTab('home');
-      }
-    } else {
-      navStopListBtn.classList.remove('hidden');
-    }
+    navStopListBtn.classList.remove('hidden');
   }
 
-  // Продуманная 5-ступенчатая система доверия (Trust Score 0%..100%) и наказаний для Исследователя и Агента
+  // Продуманная 5-ступенчатая система доверия (Trust Score 0%..100%) и наказаний для Наблюдателя и Спецагента Санты
   const strikes = Math.max(0, Number(window.state.falseStrikes) || 0);
   const trustPct = Math.max(0, 100 - strikes * 20);
   const legitStreak = Number(window.state.legitStreak) || 0;
@@ -1040,7 +1029,7 @@ window.updateAllUI = function () {
     }
     if (trustTierEl) {
       trustTierEl.textContent = isExplorer
-        ? '🔴 Штрафной тариф Исследователя • Сигналы +2 б. урезаны до +1 б.'
+        ? '🔴 Штрафной тариф Наблюдателя • Сигналы +2 б. урезаны до +1 б.'
         : '🔴 Штрафной режим Агента • Миссии закрыты и тариф урезан до +1 б.';
     }
     if (tariffEl) {
@@ -1189,34 +1178,29 @@ window.smoothCrossfadeElements = function (fromEl, toEl, direction) {
     return;
   }
 
-  // 1. Моментально скрываем предыдущий элемент (никакого position: absolute, ломающего высоту скролла!)
+  // 1. Скрываем предыдущий элемент (в нормальном потоке документа)
   if (fromEl) {
     window.cleanViewInlineLock(fromEl);
     fromEl.classList.add('hidden');
   }
 
-  // 2. Показываем целевой элемент в нормальном потоке документа
+  // 2. Показываем целевой элемент
   window.cleanViewInlineLock(toEl);
   toEl.classList.remove('hidden');
 
-  // 3. Мгновенно сбрасываем скролл контейнера наверх
+  // 3. Мгновенно сбрасываем скролл контейнера наверх БЕЗ сброса overflowY
   const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTop = 0;
+  if (vp) {
+    vp.scrollTop = 0;
+  }
 
-  // 4. Принудительный reflow, чтобы браузер сразу зарегистрировал правильный scrollHeight
-  void toEl.offsetHeight;
-
-  // 5. Легкая анимация плавного появления (без 3D-трансформаций, чтобы WebKit не отключал тач-скролл)
+  // 4. Легкая анимация плавного появления
   toEl.classList.add('smooth-view-enter');
   toEl._leaveTimer = setTimeout(() => {
     window.cleanViewInlineLock(toEl);
-    if (vp) {
-      vp.scrollTop = vp.scrollTop;
-    }
   }, 220);
 };
 
-// Плавное закрытие модальных окон с fade-out + slide-down вместо резкого 0ms скрытия
 window.smoothCloseModal = function (modalId) {
   const modal = typeof modalId === 'string' ? document.getElementById(modalId) : modalId;
   if (!modal || modal.classList.contains('hidden')) return;
@@ -1229,60 +1213,8 @@ window.smoothCloseModal = function (modalId) {
   }, 250);
 };
 
-// --- ПЕРЕХОД МЕЖДУ ЭКРАНОМ 5 БРЕНДОВ И СТРАНИЦЕЙ ВЫБОРА СИГНАЛА ---
-window.openBrandClaimsPage = function (brandKey) {
-  selectBrand(brandKey);
-  const hub = document.getElementById('homeBrandsHub');
-  const page = document.getElementById('homeBrandClaimsPage');
-  window.smoothCrossfadeElements(hub, page, 'push');
-
-  const backHomeBtn = document.getElementById('headerBackHomeBtn');
-  if (backHomeBtn) {
-    backHomeBtn.classList.remove('hidden');
-    backHomeBtn.classList.add('flex');
-  }
-
-  const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTop = 0;
-};
-
-window.backToBrandsHub = function (silentReset) {
-  const hub = document.getElementById('homeBrandsHub');
-  const page = document.getElementById('homeBrandClaimsPage');
-  if (silentReset) {
-    if (page) {
-      window.cleanViewInlineLock(page);
-      page.classList.add('hidden');
-    }
-    if (hub) {
-      window.cleanViewInlineLock(hub);
-      hub.classList.remove('hidden');
-    }
-  } else {
-    window.smoothCrossfadeElements(page, hub, 'pop');
-  }
-
-  const header = document.getElementById('appHeader');
-  if (header) header.style.backgroundColor = '#009FE3';
-  const hIcon = document.getElementById('headerBrandIcon');
-  if (hIcon) hIcon.className = 'fa-solid fa-cart-shopping text-white text-sm';
-  const headerLogoImg = document.getElementById('headerBrandLogoImg');
-  const defaultSantaLogo = (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS.santa) || 'assets/logos/santa_retail.png';
-  if (headerLogoImg) headerLogoImg.src = defaultSantaLogo;
-
-  const backHomeBtn = document.getElementById('headerBackHomeBtn');
-  if (backHomeBtn && window.state.activeTab === 'home') {
-    backHomeBtn.classList.add('hidden');
-    backHomeBtn.classList.remove('flex');
-  }
-
-  if (!silentReset) {
-    const vp = document.getElementById('mainViewport');
-    if (vp) vp.scrollTop = 0;
-  }
-};
-
-window.selectBrand = function (brandKey) {
+// --- ВЫБОР И ПЕРЕКЛЮЧЕНИЕ АКТИВНОГО БРЕНДА ХОЛДИНГА САНТА ---
+function selectBrand(brandKey) {
   if (!window.BRAND_CONFIG[brandKey]) brandKey = 'santa';
   window.state.activeBrand = brandKey;
   window.state.openCategoryIndex = 0;
@@ -1324,6 +1256,62 @@ window.selectBrand = function (brandKey) {
   if (subEl) subEl.textContent = cfg.subtitle;
 
   renderBrandChecklists();
+}
+window.selectBrand = selectBrand;
+
+// --- ПЕРЕХОД МЕЖДУ ЭКРАНОМ 5 БРЕНДОВ И СТРАНИЦЕЙ ВЫБОРА СИГНАЛА ---
+window.openBrandClaimsPage = function (brandKey) {
+  selectBrand(brandKey);
+  const hub = document.getElementById('homeBrandsHub');
+  const page = document.getElementById('homeBrandClaimsPage');
+  window.smoothCrossfadeElements(hub, page, 'push');
+
+  const backHomeBtn = document.getElementById('headerBackHomeBtn');
+  if (backHomeBtn) {
+    backHomeBtn.classList.remove('hidden');
+    backHomeBtn.classList.add('flex');
+  }
+
+  const vp = document.getElementById('mainViewport');
+  if (vp) {
+    vp.scrollTop = 0;
+  }
+};
+
+function backToBrandsHub(silentReset) {
+  const hub = document.getElementById('homeBrandsHub');
+  const page = document.getElementById('homeBrandClaimsPage');
+  if (silentReset) {
+    if (page) {
+      window.cleanViewInlineLock(page);
+      page.classList.add('hidden');
+    }
+    if (hub) {
+      window.cleanViewInlineLock(hub);
+      hub.classList.remove('hidden');
+    }
+  } else {
+    window.smoothCrossfadeElements(page, hub, 'pop');
+  }
+
+  const header = document.getElementById('appHeader');
+  if (header) header.style.backgroundColor = '#009FE3';
+  const hIcon = document.getElementById('headerBrandIcon');
+  if (hIcon) hIcon.className = 'fa-solid fa-cart-shopping text-white text-sm';
+  const headerLogoImg = document.getElementById('headerBrandLogoImg');
+  const defaultSantaLogo = (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS.santa) || 'assets/logos/santa_retail.png';
+  if (headerLogoImg) headerLogoImg.src = defaultSantaLogo;
+
+  const backHomeBtn = document.getElementById('headerBackHomeBtn');
+  if (backHomeBtn && window.state.activeTab === 'home') {
+    backHomeBtn.classList.add('hidden');
+    backHomeBtn.classList.remove('flex');
+  }
+
+  const vp = document.getElementById('mainViewport');
+  if (vp) {
+    vp.scrollTop = 0;
+  }
 };
 
 window.clearChecklistSearch = function () {
@@ -1331,7 +1319,7 @@ window.clearChecklistSearch = function () {
   renderBrandChecklists();
 };
 
-window.toggleCategoryAccordion = function (idx) {
+function toggleCategoryAccordion(idx) {
   const nextIdx = (window.state.openCategoryIndex === idx) ? -1 : idx;
   window.state.openCategoryIndex = nextIdx;
 
@@ -1354,7 +1342,7 @@ window.toggleCategoryAccordion = function (idx) {
   renderBrandChecklists();
 };
 
-window.renderBrandChecklists = function () {
+function renderBrandChecklists() {
   const cfg = window.BRAND_CONFIG[window.state.activeBrand];
   if (!cfg) return;
   const searchEl = document.getElementById('checklistSearchInput');
@@ -1426,7 +1414,7 @@ window.renderBrandChecklists = function () {
 };
 
 // --- МОДАЛЬНОЕ ОКНО СЪЕМКИ ДОКАЗАТЕЛЬСТВА И ОТПРАВКИ ОТЧЕТА ---
-window.openIssueReportModal = function (brandKey, itemId) {
+function openIssueReportModal(brandKey, itemId) {
   const cfg = window.BRAND_CONFIG[brandKey];
   let foundItem = null;
   let foundCatTitle = 'Контроль качества';
@@ -1647,7 +1635,7 @@ function showReportModalUI() {
   if (typeof window.resetSignalAgentsForNewSignal === 'function') window.resetSignalAgentsForNewSignal();
 }
 
-window.closeReportModal = function () {
+function closeReportModal() {
   stopReportCamera();
   window.smoothCloseModal('reportModal');
 };
@@ -1727,7 +1715,7 @@ window.submitReport = function (isFakeTest) {
       window.state.claimTariffCut = true;
       window.state.missionsBanned = true;
       msg = isExplorer
-        ? `3-й ложный отчёт (Доверие 40%)! Списан штраф -2 балла (счёт: ${window.state.points} б.) и включён Штрафной тариф Исследователя: критические сигналы урезаны до +1 б.`
+        ? `3-й ложный отчёт (Доверие 40%)! Списан штраф -2 балла (счёт: ${window.state.points} б.) и включён Штрафной тариф Наблюдателя: критические сигналы урезаны до +1 б.`
         : `3-й ложный отчёт (Доверие 40%)! Списан штраф -2 балла (счёт: ${window.state.points} б.), заблокированы миссии и урезан тариф сигналов.`;
     } else if (s === 4) {
       penalty = 2;
@@ -1867,7 +1855,7 @@ window.submitReport = function (isFakeTest) {
 };
 
 // --- МИССИИ: ПЕРЕХОД ПО СЛОЖНОСТИ, БРОНИРОВАНИЕ, ОТМЕНА МИССИИ И ДЕТАЛЬНОЕ ОПИСАНИЕ ---
-window.openMissionsDifficultyPage = function (diffKey) {
+function openMissionsDifficultyPage(diffKey) {
   window.state.missionFilter = diffKey || 'all';
   const hub = document.getElementById('missionsDifficultyHub');
   const page = document.getElementById('missionsListPage');
@@ -1892,10 +1880,13 @@ window.openMissionsDifficultyPage = function (diffKey) {
 
   renderMissionsTab();
   const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTop = 0;
+  if (vp) {
+    vp.scrollTop = 0;
+    vp.scrollTop = 0;
+  }
 };
 
-window.backToMissionsHub = function (silentReset) {
+function backToMissionsHub(silentReset) {
   const hub = document.getElementById('missionsDifficultyHub');
   const page = document.getElementById('missionsListPage');
   if (silentReset) {
@@ -1910,7 +1901,10 @@ window.backToMissionsHub = function (silentReset) {
   } else {
     window.smoothCrossfadeElements(page, hub, 'pop');
     const vp = document.getElementById('mainViewport');
-    if (vp) vp.scrollTop = 0;
+    if (vp) {
+      vp.scrollTop = 0;
+      vp.scrollTop = 0;
+    }
   }
 };
 
@@ -2052,7 +2046,7 @@ window.saveCustomMission = function () {
   showToast('Задание создано!', `Добавлено в раздел «${cfg.label}» (+${cfg.pts} б.).`, 'success');
 };
 
-window.renderMissionsTab = function () {
+function renderMissionsTab() {
   // Обновляем счетчики на 3 карточках сложности
   const allMissions = window.state.missions || [];
   const cSimple = allMissions.filter(m => m.difficulty === 'simple').length;
@@ -2338,7 +2332,7 @@ window.triggerInterceptForStopItem = function (batchId) {
   openRecallBanner(window.activeRecallContext);
 };
 
-window.renderStopListTab = function () {
+function renderStopListTab() {
   const container = document.getElementById('stopListContainer');
   if (!container) return;
   const list = window.state.stopList || [];
@@ -2399,14 +2393,14 @@ window.renderStopListTab = function () {
   `).join('');
 };
 
-window.openRecallBanner = function (ctx) {
+function openRecallBanner(ctx) {
   document.getElementById('recallBannerBadge').textContent = ctx.badge;
   document.getElementById('recallBannerTitle').textContent = ctx.title;
   document.getElementById('recallBannerDesc').innerHTML = ctx.desc;
   document.getElementById('recallEmergencyBanner').classList.remove('hidden');
 };
 
-window.closeRecallBanner = function () {
+function closeRecallBanner() {
   document.getElementById('recallEmergencyBanner').classList.add('hidden');
 };
 
@@ -2449,7 +2443,7 @@ window.confirmRecallIntercept = function () {
 // ============================================================================
 // РЕЙТИНГ И ИСТОРИЯ ПРОВЕРОК (С НУЛЯ, БЕЗ ВПИСАННЫХ ЧУЖИХ ЛЮДЕЙ!)
 // ============================================================================
-window.renderLeaderboardTab = function (allPlayers) {
+function renderLeaderboardTab(allPlayers) {
   const lbContainer = document.getElementById('leaderboardList');
   if (!lbContainer) return;
 
@@ -2519,7 +2513,7 @@ window.renderLeaderboardTab = function (allPlayers) {
   }).join('');
 };
 
-window.renderHistoryList = function () {
+function renderHistoryList() {
   const histContainer = document.getElementById('historyList');
   const countBadge = document.getElementById('historyCountBadge');
   if (!histContainer) return;
@@ -2602,12 +2596,7 @@ window.resetStrikesDemo = function () {
 // --- НАВИГАЦИЯ, ВОЗВРАТ НА ГЛАВЮ, НАСТРОЙКИ, ОНБОРДИНГ И QR-КОД ДЛЯ ДИРЕКТОРА ---
 const TAB_ORDER = ['home', 'missions', 'scanner', 'stoplist', 'leaderboard', 'settings'];
 
-window.switchMainTab = function (tabKey) {
-  const isExplorer = !isSpecialAgentRole(window.state.userRole);
-  if ((tabKey === 'missions' || tabKey === 'stoplist') && isExplorer) {
-    tabKey = 'home';
-  }
-
+function switchMainTab(tabKey) {
   const prevTab = window.state.activeTab || 'home';
   const prevSec = document.getElementById(`tab-${prevTab}`);
   const nextSec = document.getElementById(`tab-${tabKey}`);
@@ -2624,21 +2613,20 @@ window.switchMainTab = function (tabKey) {
     stopLiveBarcodeScanner();
   }
 
-  // Перед показом вкладки тихо подготавливаем её стартовый экран (без двойной вложенной анимации!)
+  // Перед показом вкладки тихо подготавливаем её стартовый экран
   if (tabKey === 'home') {
     backToBrandsHub(true);
   } else if (tabKey === 'missions') {
     backToMissionsHub(true);
   }
 
-  // Определяем направление скольжения между вкладками (вправо или влево)
   const prevIdx = TAB_ORDER.indexOf(prevTab);
   const nextIdx = TAB_ORDER.indexOf(tabKey);
   const slideDir = (prevIdx >= 0 && nextIdx >= 0 && prevIdx !== nextIdx)
     ? (nextIdx > prevIdx ? 'push' : 'pop')
     : 'crossfade';
 
-  // Скрываем все прочие фоновые вкладки и запускаем перекрывающийся Cross-Fade + Glide между prevSec и nextSec
+  // Скрываем все прочие фоновые вкладки и переключаем
   TAB_ORDER.forEach(k => {
     const sec = document.getElementById(`tab-${k}`);
     if (sec && sec !== prevSec && sec !== nextSec) {
@@ -2647,16 +2635,15 @@ window.switchMainTab = function (tabKey) {
     }
     const navBtn = document.getElementById(`navBtn-${k}`);
     if (navBtn && k !== 'scanner') {
-      const hideRestricted = ((k === 'missions' || k === 'stoplist') && isExplorer) ? 'hidden ' : '';
       navBtn.className = (k === tabKey)
-        ? `${hideRestricted}nav-tab-btn relative flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-[#009FE3] bg-sky-50/80 font-extrabold -translate-y-0.5 scale-[1.04] transition`
-        : `${hideRestricted}nav-tab-btn relative flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition`;
+        ? 'nav-tab-btn relative flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-[#009FE3] bg-sky-50/80 font-extrabold -translate-y-0.5 scale-[1.04] transition'
+        : 'nav-tab-btn relative flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition';
     }
   });
 
   window.smoothCrossfadeElements(prevSec, nextSec, slideDir);
 
-  // Кнопка быстрого возврата «🏠 Главная» в верхней шапке (видна всегда, когда мы не на главном экране 5 брендов)
+  // Кнопка быстрого возврата «🏠 Главная» в верхней шапке
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
   if (backHomeBtn) {
     if (tabKey === 'home') {
@@ -2669,8 +2656,9 @@ window.switchMainTab = function (tabKey) {
   }
 
   const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTop = 0;
-  if (typeof window.syncSettingsUI === 'function') window.syncSettingsUI();
+  if (vp) {
+    vp.scrollTop = 0;
+  }
 };
 
 // ============================================================================
@@ -2788,7 +2776,7 @@ window.exportReportsToCsv = function () {
   showToast('Выгрузка CSV готова!', `Сохранено отчетов: ${list.length}. Открывается в Excel.`, 'success');
 };
 
-window.syncSettingsUI = function () {
+function syncSettingsUI() {
   const isDark = window.state.theme === 'dark';
   document.body.classList.toggle('dark-theme', isDark);
   document.documentElement.classList.toggle('large-text-mode', Boolean(window.state.largeTextMode));
@@ -3027,7 +3015,7 @@ window.lockAppSession = function () {
   showToast('Сессия заблокирована', 'Введите ваш пароль или используйте Face ID для входа.', 'info');
 };
 
-window.openOnboardingModal = function (isEditMode) {
+function openOnboardingModal(isEditMode) {
   window.isEditingProfileMode = Boolean(isEditMode && window.isSessionAuthenticated);
   clearOnbPasswordError();
 
@@ -3398,7 +3386,7 @@ window.closeShareModal = function () {
 
 // Toast helper
 let toastTimer = null;
-window.showToast = function (title, message, type) {
+function showToast(title, message, type) {
   const toast = document.getElementById('toastNotification');
   const iconBox = document.getElementById('toastIconBox');
   document.getElementById('toastTitle').textContent = title;
@@ -3471,7 +3459,7 @@ document.addEventListener('click', function (e) {
 });
 
 // --- ЗАСТАВКА НА ОРИГИНАЛЬНОМ ЦВЕТЕ САНТЫ (#009FE3) И ПЕРЕКЛЮЧАТЕЛЬ НАЗВАНИЯ ---
-window.playSplashScreen = function (forcedName) {
+function playSplashScreen(forcedName) {
   if (forcedName) {
     window.state.appTitleMode = forcedName;
     saveState();
@@ -3515,7 +3503,7 @@ window.addEventListener('DOMContentLoaded', function () {
   window.isSessionAuthenticated = false;
   updateAllUI();
   selectBrand(window.state.activeBrand || 'santa');
-  backToBrandsHub();
+  backToBrandsHub(true);
   playSplashScreen();
   // Пользователь сразу попадает на главный экран
   window.isSessionAuthenticated = true;
@@ -3524,3 +3512,29 @@ window.addEventListener('DOMContentLoaded', function () {
   pollServerState();
   setInterval(pollServerState, 4000);
 });
+
+
+// Top-level global exports for hoisted functions
+window.updateAllUI = updateAllUI;
+window.renderBrandChecklists = renderBrandChecklists;
+window.backToBrandsHub = backToBrandsHub;
+window.switchMainTab = switchMainTab;
+window.showToast = showToast;
+window.syncSettingsUI = syncSettingsUI;
+window.renderMissionsTab = renderMissionsTab;
+window.renderStopListTab = renderStopListTab;
+window.renderLeaderboardTab = renderLeaderboardTab;
+window.renderHistoryList = renderHistoryList;
+window.openIssueReportModal = openIssueReportModal;
+window.closeReportModal = closeReportModal;
+window.openOnboardingModal = openOnboardingModal;
+window.closeLightResetModal = closeLightResetModal;
+window.closeDeleteProfileModal = closeDeleteProfileModal;
+window.openRecallBanner = openRecallBanner;
+window.closeRecallBanner = closeRecallBanner;
+window.backToMissionsHub = backToMissionsHub;
+window.openMissionsDifficultyPage = openMissionsDifficultyPage;
+window.playSplashScreen = playSplashScreen;
+window.toggleCategoryAccordion = toggleCategoryAccordion;
+window.selectBrand = selectBrand;
+window.saveState = saveState;

@@ -259,7 +259,12 @@ const server = http.createServer((req, res) => {
           res.end('Not found');
           return;
         }
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.writeHead(200, {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        });
         res.end(content);
       });
       return;
@@ -273,7 +278,16 @@ const server = http.createServer((req, res) => {
         res.end('Server error');
         return;
       }
-      res.writeHead(200, { 'Content-Type': mime });
+      const isDynamic = ext === '.html' || ext === '.json' || path.basename(filePath) === 'sw.js';
+      const cacheControl = isDynamic
+        ? 'no-cache, no-store, must-revalidate'
+        : 'public, max-age=86400';
+      res.writeHead(200, {
+        'Content-Type': mime,
+        'Cache-Control': cacheControl,
+        'Pragma': isDynamic ? 'no-cache' : 'public',
+        'Expires': isDynamic ? '0' : '86400'
+      });
       res.end(content);
     });
   });
