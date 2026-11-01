@@ -60,22 +60,17 @@
       box-sizing: border-box;
     }
     html, body {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow: hidden !important;
-      overscroll-behavior: none !important;
-      background-color: #F4F5F7 !important;
-      color: #0F172A !important;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-      -webkit-text-size-adjust: 100% !important;
-      -webkit-tap-highlight-color: transparent !important;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #F4F5F7;
+      color: #0F172A;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
     }
     button, .nav-tab-btn, #appHeader, #appBottomNav {
       -webkit-user-select: none;
@@ -86,74 +81,65 @@
       display: none;
     }
     #appShell {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      height: 100% !important;
-      display: flex !important;
-      flex-direction: column !important;
-      overflow: hidden !important;
-      overscroll-behavior: none !important;
-      margin: 0 auto !important;
-      background-color: #F4F5F7 !important;
-      box-sizing: border-box !important;
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      margin: 0 auto;
+      background-color: #F4F5F7;
     }
     @media (min-width: 640px) {
       body {
-        position: static !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 16px !important;
-        background-color: #0F172A !important;
-        overflow: auto !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background-color: #0F172A;
+        overflow: auto;
       }
       #desktopToolbar {
         display: flex !important;
       }
       #appShell {
-        max-width: 440px !important;
-        height: 860px !important;
-        max-height: 94vh !important;
-        border-radius: 40px !important;
-        box-shadow: 0 25px 70px -15px rgba(0, 0, 0, 0.45) !important;
-        border: 6px solid #FFFFFF !important;
+        max-width: 440px;
+        height: 860px;
+        max-height: 94vh;
+        border-radius: 40px;
+        box-shadow: 0 25px 70px -15px rgba(0, 0, 0, 0.45);
+        border: 6px solid #FFFFFF;
       }
     }
     #appHeader {
-      flex-shrink: 0 !important;
-      width: 100% !important;
-      background-color: #009FE3 !important;
-      color: #FFFFFF !important;
-      padding-top: max(env(safe-area-inset-top, 0px), 12px) !important;
-      padding-bottom: 10px !important;
-      padding-left: 12px !important;
-      padding-right: 12px !important;
-      border-bottom-left-radius: 22px !important;
-      border-bottom-right-radius: 22px !important;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08) !important;
-      position: relative !important;
-      z-index: 25 !important;
-      box-sizing: border-box !important;
+      flex-shrink: 0;
+      width: 100%;
+      background-color: #009FE3;
+      color: #FFFFFF;
+      padding-top: max(env(safe-area-inset-top, 0px), 12px);
+      padding-bottom: 10px;
+      padding-left: 12px;
+      padding-right: 12px;
+      border-bottom-left-radius: 22px;
+      border-bottom-right-radius: 22px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+      position: relative;
+      z-index: 25;
       transition: background-color 0.35s ease, box-shadow 0.35s ease;
     }
     #mainViewport {
-      flex: 1 1 0% !important;
-      min-height: 0 !important;
-      width: 100% !important;
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-      -webkit-overflow-scrolling: touch !important;
-      overscroll-behavior-y: contain !important;
-      touch-action: pan-y !important;
-      padding: 0 !important;
-      padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px)) !important;
-      box-sizing: border-box !important;
+      flex: 1 1 0%;
+      min-height: 0;
+      width: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      padding: 0;
+      padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px));
     }
     #tab-home,
     #tab-missions,
@@ -165,32 +151,28 @@
     #homeBrandClaimsPage,
     #missionsDifficultyHub,
     #missionsListPage {
-      width: 100% !important;
-      min-height: 100% !important;
-      height: auto !important;
-      box-sizing: border-box !important;
-      touch-action: pan-y !important;
+      width: 100%;
+      height: auto;
     }
     #appBottomNav {
-      position: absolute !important;
-      bottom: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      width: 100% !important;
-      background: rgba(255, 255, 255, 0.96) !important;
-      backdrop-filter: blur(20px) !important;
-      -webkit-backdrop-filter: blur(20px) !important;
-      border-top: 1px solid rgba(226, 232, 240, 0.85) !important;
-      padding-top: 6px !important;
-      padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px) !important;
-      padding-left: 6px !important;
-      padding-right: 6px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-between !important;
-      z-index: 30 !important;
-      box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.05) !important;
-      box-sizing: border-box !important;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(226, 232, 240, 0.85);
+      padding-top: 6px;
+      padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+      padding-left: 8px;
+      padding-right: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 30;
+      box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.05);
     }
     .header-extra-btn {
       display: none !important;
@@ -208,7 +190,6 @@
         white-space: nowrap;
       }
     }
-    /* Global Image constraint inside app shell */
     #appShell img {
       max-width: 100%;
       max-height: 100%;
@@ -221,14 +202,13 @@
       max-width: 100% !important;
       max-height: 100% !important;
       object-fit: contain !important;
-      display: block !important;
     }
-
-    /* Modals mobile scroll fix: flex-start with auto margin prevents top clipping */
     .app-modal-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      align-items: flex-end;
       justify-content: flex-start;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
@@ -250,66 +230,11 @@
       flex-shrink: 0 !important;
       box-sizing: border-box !important;
     }
-
-    /* Ультра-плавные переходы без блокировки скролла и без 3D-трансформаций */
-    @keyframes softViewEnter {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    @keyframes softModalSheet {
-      0% { opacity: 0; transform: translate3d(0, 20px, 0); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0); }
-    }
-    @keyframes softModalSheetExit {
-      0% { opacity: 1; transform: translate3d(0, 0, 0); }
-      100% { opacity: 0; transform: translate3d(0, 16px, 0); }
-    }
-    .smooth-view-enter,
-    .view-push-enter,
-    .view-pop-enter {
-      animation: softViewEnter 0.2s ease-out forwards;
-    }
-    .view-push-leave,
-    .view-pop-leave,
-    .view-crossfade-leave {
-      display: none !important;
-    }
-    .smooth-modal-enter { animation: softModalSheet 0.35s cubic-bezier(0.16, 1, 0.3, 1) ease-out; }
-
-    @keyframes softBackdropFade { 0% { opacity: 0; } 100% { opacity: 1; } }
-    @keyframes softBackdropFadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
-
-    #reportModal:not(.hidden),
-    #onboardingModal:not(.hidden),
-    #lightResetModal:not(.hidden),
-    #deleteProfileConfirmModal:not(.hidden),
-    #createMissionModal:not(.hidden),
-    #addStopListModal:not(.hidden),
-    #storeSwitcherModal:not(.hidden),
-    #pwaInstallModal:not(.hidden),
-    #shareDirectorModal:not(.hidden) {
-      animation: softBackdropFade 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    #reportModal:not(.hidden) > div,
-    #onboardingModal:not(.hidden) > div,
-    #lightResetModal:not(.hidden) > div,
-    #deleteProfileConfirmModal:not(.hidden) > div,
-    #createMissionModal:not(.hidden) > div,
-    #addStopListModal:not(.hidden) > div,
-    #storeSwitcherModal:not(.hidden) > div,
-    #pwaInstallModal:not(.hidden) > div,
-    #shareDirectorModal:not(.hidden) > div,
-    #toastNotification:not(.hidden) {
-      animation: softModalSheet 0.44s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    .modal-closing { animation: softBackdropFadeOut 0.26s cubic-bezier(0.22, 1, 0.36, 1) forwards !important; pointer-events: none !important; }
-    .modal-closing > div { animation: softModalSheetExit 0.26s cubic-bezier(0.22, 1, 0.36, 1) forwards !important; }
-
     .smooth-accordion-grid {
       display: grid;
       grid-template-rows: 0fr;
       opacity: 0;
-      transition: grid-template-rows 0.44s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.36s ease;
+      transition: grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
     }
     .smooth-accordion-grid.open {
       grid-template-rows: 1fr;
@@ -321,27 +246,6 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
     .theme-transition { transition: background-color 0.35s ease, border-color 0.35s ease, color 0.25s ease, box-shadow 0.35s ease; }
-    .camera-grid {
-      background-image: 
-        linear-gradient(to right, rgba(255,255,255,0.12) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.12) 1px, transparent 1px);
-      background-size: 33.33% 33.33%;
-    }
-    @keyframes wave {
-      0%, 100% { height: 6px; }
-      50% { height: 22px; }
-    }
-    .wave-bar { animation: wave 0.7s ease-in-out infinite; }
-    .wave-bar:nth-child(2) { animation-delay: 0.1s; }
-    .wave-bar:nth-child(3) { animation-delay: 0.2s; }
-    .wave-bar:nth-child(4) { animation-delay: 0.3s; }
-    .wave-bar:nth-child(5) { animation-delay: 0.15s; }
-    #scannerReaderViewport video {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover !important;
-      border-radius: 16px;
-    }
     html.large-text-mode { font-size: 108%; }
 
     /* REVOLUT DARK MODE THEME */
@@ -349,27 +253,27 @@
     body.dark-theme #appShell { background-color: #0B0F19 !important; border-color: #1E293B !important; }
     body.dark-theme #desktopToolbar { background-color: rgba(15, 23, 42, 0.95) !important; border-color: #1E293B !important; color: #e2e8f0 !important; }
     body.dark-theme #appShell .bg-white,
-    body.dark-theme #appShell .bg-white\/95,
-    body.dark-theme #appShell .bg-white\/90 { background-color: #151C2C !important; color: #f8fafc; }
+    body.dark-theme #appShell .bg-white/95,
+    body.dark-theme #appShell .bg-white/90 { background-color: #151C2C !important; color: #f8fafc; }
     body.dark-theme #appShell #santaSplashScreen .bg-white { background-color: #ffffff !important; color: #009FE3 !important; }
-    body.dark-theme #appShell .bg-\[\#F4F5F7\],
+    body.dark-theme #appShell .bg-[#F4F5F7],
     body.dark-theme #appShell .bg-slate-50,
-    body.dark-theme #appShell .bg-slate-50\/70,
-    body.dark-theme #appShell .bg-slate-50\/50,
+    body.dark-theme #appShell .bg-slate-50/70,
+    body.dark-theme #appShell .bg-slate-50/50,
     body.dark-theme #appShell .bg-slate-100,
-    body.dark-theme #appShell .bg-slate-100\/80 { background-color: #1E293B !important; }
+    body.dark-theme #appShell .bg-slate-100/80 { background-color: #1E293B !important; }
     body.dark-theme #appShell .text-slate-900,
     body.dark-theme #appShell .text-slate-800,
     body.dark-theme #appShell .text-slate-700 { color: #F1F5F9 !important; }
     body.dark-theme #appShell .text-slate-600,
     body.dark-theme #appShell .text-slate-500 { color: #94A3B8 !important; }
     body.dark-theme #appShell .border-slate-200,
-    body.dark-theme #appShell .border-slate-200\/60,
+    body.dark-theme #appShell .border-slate-200/60,
     body.dark-theme #appShell .border-slate-100,
     body.dark-theme #appShell .border-slate-300 { border-color: #263147 !important; }
     body.dark-theme #appShell .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
-    body.dark-theme #appShell .divide-slate-100\/80 > :not([hidden]) ~ :not([hidden]),
-    body.dark-theme #appShell .divide-slate-100\/70 > :not([hidden]) ~ :not([hidden]) { border-color: #1E293B !important; }
+    body.dark-theme #appShell .divide-slate-100/80 > :not([hidden]) ~ :not([hidden]),
+    body.dark-theme #appShell .divide-slate-100/70 > :not([hidden]) ~ :not([hidden]) { border-color: #1E293B !important; }
     body.dark-theme #appShell input:not([type="checkbox"]),
     body.dark-theme #appShell textarea,
     body.dark-theme #appShell select { background-color: #0F172A !important; color: #F8FAFC !important; border-color: #334155 !important; }
@@ -1531,44 +1435,39 @@
     </main>
 
     <!-- BOTTOM NAVIGATION BAR (BARCODE STRICTLY CENTERED, SETTINGS ONLY IN TOP HEADER) -->
-    <nav id="appBottomNav" class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-200/60 px-1 pt-1.5 pb-[max(env(safe-area-inset-bottom),10px)] flex items-center justify-between z-30 shadow-[0_-4px_20px_rgba(15,23,42,0.04)]">
-      <!-- Left Balanced Group -->
-      <div class="flex-1 flex items-center justify-evenly">
-        <button onclick="switchMainTab('home')" id="navBtn-home" class="nav-tab-btn flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-[#009FE3] font-bold transition">
+    <nav id="appBottomNav" class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-200/60 px-2 pt-1.5 pb-[max(env(safe-area-inset-bottom),10px)] flex items-center justify-between z-30 shadow-[0_-4px_20px_rgba(15,23,42,0.04)]">
+      <!-- Left Balanced Group (2 tabs) -->
+      <div class="flex-1 flex items-center justify-around">
+        <button onclick="switchMainTab('home')" id="navBtn-home" class="nav-tab-btn flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-[#009FE3] font-bold transition">
           <i class="fa-solid fa-house text-base"></i>
-          <span class="text-[9px] mt-0.5">Главная</span>
+          <span class="text-[10px] mt-0.5">Главная</span>
         </button>
 
-        <button onclick="switchMainTab('missions')" id="navBtn-missions" class="nav-tab-btn relative flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition">
+        <button onclick="switchMainTab('missions')" id="navBtn-missions" class="nav-tab-btn relative flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition">
           <i class="fa-solid fa-crosshairs text-base"></i>
-          <span class="text-[9px] mt-0.5">Миссии</span>
+          <span class="text-[10px] mt-0.5">Миссии</span>
           <span id="bookedMissionDot" class="hidden absolute top-1 right-2 w-2 h-2 rounded-full bg-amber-500"></span>
         </button>
+      </div>
 
-        <button onclick="switchMainTab('stoplist')" id="navBtn-stoplist" class="nav-tab-btn relative flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition">
+      <!-- Center: Strictly Centered Barcode Scanner Button (56x56) -->
+      <div class="shrink-0 px-2 relative -top-3.5 flex flex-col items-center">
+        <button onclick="switchMainTab('scanner')" id="navBtn-scanner" class="w-14 h-14 rounded-full bg-[#009FE3] text-white shadow-[0_8px_22px_rgba(0,159,227,0.42)] border-4 border-white flex flex-col items-center justify-center transition transform active:scale-95" title="Сканер штрихкодов">
+          <i class="fa-solid fa-barcode text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Right Balanced Group (2 tabs) -->
+      <div class="flex-1 flex items-center justify-around">
+        <button onclick="switchMainTab('stoplist')" id="navBtn-stoplist" class="nav-tab-btn relative flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition">
           <i class="fa-solid fa-triangle-exclamation text-base"></i>
-          <span class="text-[9px] mt-0.5">Красный лист</span>
-          <span id="navStopListCountBadge" class="hidden absolute top-0.5 right-1.5 px-1 text-[8px] font-black rounded-full bg-rose-600 text-white">0</span>
+          <span class="text-[10px] mt-0.5">Красный лист</span>
+          <span id="navStopListCountBadge" class="hidden absolute top-0.5 right-1.5 px-1 text-[9px] font-black rounded-full bg-rose-600 text-white">0</span>
         </button>
-      </div>
 
-      <!-- Center: Strictly Centered Barcode Scanner Button -->
-      <div class="shrink-0 px-1 relative -top-3.5 flex flex-col items-center">
-        <button onclick="switchMainTab('scanner')" id="navBtn-scanner" class="w-13 h-13 rounded-full bg-[#009FE3] text-white shadow-[0_8px_22px_rgba(0,159,227,0.42)] border-4 border-white flex flex-col items-center justify-center transition transform active:scale-95" title="Сканер штрихкодов">
-          <i class="fa-solid fa-barcode text-lg"></i>
-        </button>
-      </div>
-
-      <!-- Right Balanced Group -->
-      <div class="flex-1 flex items-center justify-evenly">
-        <button onclick="switchMainTab('leaderboard')" id="navBtn-leaderboard" class="nav-tab-btn flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition">
+        <button onclick="switchMainTab('leaderboard')" id="navBtn-leaderboard" class="nav-tab-btn flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition">
           <i class="fa-solid fa-trophy text-base"></i>
-          <span class="text-[9px] mt-0.5">Рейтинг</span>
-        </button>
-
-        <button onclick="switchMainTab('settings')" id="navBtn-settings" class="nav-tab-btn flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition">
-          <i class="fa-solid fa-gear text-base"></i>
-          <span class="text-[9px] mt-0.5">Настройки</span>
+          <span class="text-[10px] mt-0.5">Рейтинг</span>
         </button>
       </div>
     </nav>
@@ -8382,11 +8281,12 @@ function selectBrand(brandKey) {
 window.selectBrand = selectBrand;
 
 // --- ПЕРЕХОД МЕЖДУ ЭКРАНОМ 5 БРЕНДОВ И СТРАНИЦЕЙ ВЫБОРА СИГНАЛА ---
-window.openBrandClaimsPage = function (brandKey) {
+function openBrandClaimsPage(brandKey) {
   selectBrand(brandKey);
   const hub = document.getElementById('homeBrandsHub');
   const page = document.getElementById('homeBrandClaimsPage');
-  window.smoothCrossfadeElements(hub, page, 'push');
+  if (hub) hub.classList.add('hidden');
+  if (page) page.classList.remove('hidden');
 
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
   if (backHomeBtn) {
@@ -8398,23 +8298,14 @@ window.openBrandClaimsPage = function (brandKey) {
   if (vp) {
     vp.scrollTop = 0;
   }
-};
+}
+window.openBrandClaimsPage = openBrandClaimsPage;
 
 function backToBrandsHub(silentReset) {
   const hub = document.getElementById('homeBrandsHub');
   const page = document.getElementById('homeBrandClaimsPage');
-  if (silentReset) {
-    if (page) {
-      window.cleanViewInlineLock(page);
-      page.classList.add('hidden');
-    }
-    if (hub) {
-      window.cleanViewInlineLock(hub);
-      hub.classList.remove('hidden');
-    }
-  } else {
-    window.smoothCrossfadeElements(page, hub, 'pop');
-  }
+  if (page) page.classList.add('hidden');
+  if (hub) hub.classList.remove('hidden');
 
   const header = document.getElementById('appHeader');
   if (header) header.style.backgroundColor = '#009FE3';
@@ -8981,7 +8872,8 @@ function openMissionsDifficultyPage(diffKey) {
   window.state.missionFilter = diffKey || 'all';
   const hub = document.getElementById('missionsDifficultyHub');
   const page = document.getElementById('missionsListPage');
-  window.smoothCrossfadeElements(hub, page, 'push');
+  if (hub) hub.classList.add('hidden');
+  if (page) page.classList.remove('hidden');
 
   const pill = document.getElementById('activeMissionDiffPill');
   if (pill) {
@@ -9004,29 +8896,18 @@ function openMissionsDifficultyPage(diffKey) {
   const vp = document.getElementById('mainViewport');
   if (vp) {
     vp.scrollTop = 0;
-    vp.scrollTop = 0;
   }
 };
 
 function backToMissionsHub(silentReset) {
   const hub = document.getElementById('missionsDifficultyHub');
   const page = document.getElementById('missionsListPage');
-  if (silentReset) {
-    if (page) {
-      window.cleanViewInlineLock(page);
-      page.classList.add('hidden');
-    }
-    if (hub) {
-      window.cleanViewInlineLock(hub);
-      hub.classList.remove('hidden');
-    }
-  } else {
-    window.smoothCrossfadeElements(page, hub, 'pop');
-    const vp = document.getElementById('mainViewport');
-    if (vp) {
-      vp.scrollTop = 0;
-      vp.scrollTop = 0;
-    }
+  if (page) page.classList.add('hidden');
+  if (hub) hub.classList.remove('hidden');
+
+  const vp = document.getElementById('mainViewport');
+  if (vp) {
+    vp.scrollTop = 0;
   }
 };
 
@@ -9723,7 +9604,7 @@ function switchMainTab(tabKey) {
   const prevSec = document.getElementById(`tab-${prevTab}`);
   const nextSec = document.getElementById(`tab-${tabKey}`);
 
-  // Если нажали на уже открытую вкладку «Главная» или «Миссии» — плавно возвращаем на хаб внутри неё
+  // Если нажали на уже открытую вкладку «Главная» или «Миссии» — возвращаем на хаб внутри неё
   if (prevTab === tabKey && nextSec && !nextSec.classList.contains('hidden')) {
     if (tabKey === 'home') backToBrandsHub(false);
     if (tabKey === 'missions') backToMissionsHub(false);
@@ -9735,35 +9616,38 @@ function switchMainTab(tabKey) {
     stopLiveBarcodeScanner();
   }
 
-  // Перед показом вкладки тихо подготавливаем её стартовый экран
+  // При переходе на вкладку подготавливаем её данные
   if (tabKey === 'home') {
     backToBrandsHub(true);
+    renderBrandChecklists();
   } else if (tabKey === 'missions') {
     backToMissionsHub(true);
+    renderMissionsTab();
+  } else if (tabKey === 'stoplist') {
+    renderStopListTab();
+  } else if (tabKey === 'leaderboard') {
+    renderLeaderboardTab();
+  } else if (tabKey === 'settings') {
+    if (typeof window.syncSettingsUI === 'function') syncSettingsUI();
   }
 
-  const prevIdx = TAB_ORDER.indexOf(prevTab);
-  const nextIdx = TAB_ORDER.indexOf(tabKey);
-  const slideDir = (prevIdx >= 0 && nextIdx >= 0 && prevIdx !== nextIdx)
-    ? (nextIdx > prevIdx ? 'push' : 'pop')
-    : 'crossfade';
-
-  // Скрываем все прочие фоновые вкладки и переключаем
+  // Мгновенно и надежно переключаем видимость секций
   TAB_ORDER.forEach(k => {
     const sec = document.getElementById(`tab-${k}`);
-    if (sec && sec !== prevSec && sec !== nextSec) {
-      window.cleanViewInlineLock(sec);
-      sec.classList.add('hidden');
+    if (sec) {
+      if (k === tabKey) {
+        sec.classList.remove('hidden');
+      } else {
+        sec.classList.add('hidden');
+      }
     }
     const navBtn = document.getElementById(`navBtn-${k}`);
     if (navBtn && k !== 'scanner') {
       navBtn.className = (k === tabKey)
-        ? 'nav-tab-btn relative flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-[#009FE3] bg-sky-50/80 font-extrabold -translate-y-0.5 scale-[1.04] transition'
-        : 'nav-tab-btn relative flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition';
+        ? 'nav-tab-btn flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-[#009FE3] bg-sky-50/80 font-extrabold transition'
+        : 'nav-tab-btn flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition';
     }
   });
-
-  window.smoothCrossfadeElements(prevSec, nextSec, slideDir);
 
   // Кнопка быстрого возврата «🏠 Главная» в верхней шапке
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
@@ -10661,6 +10545,7 @@ window.toggleCategoryAccordion = toggleCategoryAccordion;
 window.selectBrand = selectBrand;
 window.saveState = saveState;
 
+window.openBrandClaimsPage = openBrandClaimsPage;
 </script>
 </body>
 </html>

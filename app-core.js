@@ -1260,11 +1260,12 @@ function selectBrand(brandKey) {
 window.selectBrand = selectBrand;
 
 // --- ПЕРЕХОД МЕЖДУ ЭКРАНОМ 5 БРЕНДОВ И СТРАНИЦЕЙ ВЫБОРА СИГНАЛА ---
-window.openBrandClaimsPage = function (brandKey) {
+function openBrandClaimsPage(brandKey) {
   selectBrand(brandKey);
   const hub = document.getElementById('homeBrandsHub');
   const page = document.getElementById('homeBrandClaimsPage');
-  window.smoothCrossfadeElements(hub, page, 'push');
+  if (hub) hub.classList.add('hidden');
+  if (page) page.classList.remove('hidden');
 
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
   if (backHomeBtn) {
@@ -1276,23 +1277,14 @@ window.openBrandClaimsPage = function (brandKey) {
   if (vp) {
     vp.scrollTop = 0;
   }
-};
+}
+window.openBrandClaimsPage = openBrandClaimsPage;
 
 function backToBrandsHub(silentReset) {
   const hub = document.getElementById('homeBrandsHub');
   const page = document.getElementById('homeBrandClaimsPage');
-  if (silentReset) {
-    if (page) {
-      window.cleanViewInlineLock(page);
-      page.classList.add('hidden');
-    }
-    if (hub) {
-      window.cleanViewInlineLock(hub);
-      hub.classList.remove('hidden');
-    }
-  } else {
-    window.smoothCrossfadeElements(page, hub, 'pop');
-  }
+  if (page) page.classList.add('hidden');
+  if (hub) hub.classList.remove('hidden');
 
   const header = document.getElementById('appHeader');
   if (header) header.style.backgroundColor = '#009FE3';
@@ -1859,7 +1851,8 @@ function openMissionsDifficultyPage(diffKey) {
   window.state.missionFilter = diffKey || 'all';
   const hub = document.getElementById('missionsDifficultyHub');
   const page = document.getElementById('missionsListPage');
-  window.smoothCrossfadeElements(hub, page, 'push');
+  if (hub) hub.classList.add('hidden');
+  if (page) page.classList.remove('hidden');
 
   const pill = document.getElementById('activeMissionDiffPill');
   if (pill) {
@@ -1882,29 +1875,18 @@ function openMissionsDifficultyPage(diffKey) {
   const vp = document.getElementById('mainViewport');
   if (vp) {
     vp.scrollTop = 0;
-    vp.scrollTop = 0;
   }
 };
 
 function backToMissionsHub(silentReset) {
   const hub = document.getElementById('missionsDifficultyHub');
   const page = document.getElementById('missionsListPage');
-  if (silentReset) {
-    if (page) {
-      window.cleanViewInlineLock(page);
-      page.classList.add('hidden');
-    }
-    if (hub) {
-      window.cleanViewInlineLock(hub);
-      hub.classList.remove('hidden');
-    }
-  } else {
-    window.smoothCrossfadeElements(page, hub, 'pop');
-    const vp = document.getElementById('mainViewport');
-    if (vp) {
-      vp.scrollTop = 0;
-      vp.scrollTop = 0;
-    }
+  if (page) page.classList.add('hidden');
+  if (hub) hub.classList.remove('hidden');
+
+  const vp = document.getElementById('mainViewport');
+  if (vp) {
+    vp.scrollTop = 0;
   }
 };
 
@@ -2601,7 +2583,7 @@ function switchMainTab(tabKey) {
   const prevSec = document.getElementById(`tab-${prevTab}`);
   const nextSec = document.getElementById(`tab-${tabKey}`);
 
-  // Если нажали на уже открытую вкладку «Главная» или «Миссии» — плавно возвращаем на хаб внутри неё
+  // Если нажали на уже открытую вкладку «Главная» или «Миссии» — возвращаем на хаб внутри неё
   if (prevTab === tabKey && nextSec && !nextSec.classList.contains('hidden')) {
     if (tabKey === 'home') backToBrandsHub(false);
     if (tabKey === 'missions') backToMissionsHub(false);
@@ -2613,35 +2595,38 @@ function switchMainTab(tabKey) {
     stopLiveBarcodeScanner();
   }
 
-  // Перед показом вкладки тихо подготавливаем её стартовый экран
+  // При переходе на вкладку подготавливаем её данные
   if (tabKey === 'home') {
     backToBrandsHub(true);
+    renderBrandChecklists();
   } else if (tabKey === 'missions') {
     backToMissionsHub(true);
+    renderMissionsTab();
+  } else if (tabKey === 'stoplist') {
+    renderStopListTab();
+  } else if (tabKey === 'leaderboard') {
+    renderLeaderboardTab();
+  } else if (tabKey === 'settings') {
+    if (typeof window.syncSettingsUI === 'function') syncSettingsUI();
   }
 
-  const prevIdx = TAB_ORDER.indexOf(prevTab);
-  const nextIdx = TAB_ORDER.indexOf(tabKey);
-  const slideDir = (prevIdx >= 0 && nextIdx >= 0 && prevIdx !== nextIdx)
-    ? (nextIdx > prevIdx ? 'push' : 'pop')
-    : 'crossfade';
-
-  // Скрываем все прочие фоновые вкладки и переключаем
+  // Мгновенно и надежно переключаем видимость секций
   TAB_ORDER.forEach(k => {
     const sec = document.getElementById(`tab-${k}`);
-    if (sec && sec !== prevSec && sec !== nextSec) {
-      window.cleanViewInlineLock(sec);
-      sec.classList.add('hidden');
+    if (sec) {
+      if (k === tabKey) {
+        sec.classList.remove('hidden');
+      } else {
+        sec.classList.add('hidden');
+      }
     }
     const navBtn = document.getElementById(`navBtn-${k}`);
     if (navBtn && k !== 'scanner') {
       navBtn.className = (k === tabKey)
-        ? 'nav-tab-btn relative flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-[#009FE3] bg-sky-50/80 font-extrabold -translate-y-0.5 scale-[1.04] transition'
-        : 'nav-tab-btn relative flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition';
+        ? 'nav-tab-btn flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-[#009FE3] bg-sky-50/80 font-extrabold transition'
+        : 'nav-tab-btn flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-slate-400 hover:text-slate-700 font-semibold transition';
     }
   });
-
-  window.smoothCrossfadeElements(prevSec, nextSec, slideDir);
 
   // Кнопка быстрого возврата «🏠 Главная» в верхней шапке
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
@@ -3538,3 +3523,5 @@ window.playSplashScreen = playSplashScreen;
 window.toggleCategoryAccordion = toggleCategoryAccordion;
 window.selectBrand = selectBrand;
 window.saveState = saveState;
+
+window.openBrandClaimsPage = openBrandClaimsPage;
