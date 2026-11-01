@@ -140,16 +140,17 @@
       transition: background-color 0.35s ease, box-shadow 0.35s ease;
     }
     #mainViewport {
-      flex: 1 1 0% !important;
+      flex: 1 1 auto !important;
       min-height: 0 !important;
+      max-height: 100% !important;
       width: 100% !important;
-      height: 100% !important;
+      height: auto !important;
       overflow-y: scroll !important;
       overflow-x: hidden !important;
       -webkit-overflow-scrolling: touch !important;
       touch-action: pan-y !important;
       padding: 0 !important;
-      padding-bottom: calc(84px + env(safe-area-inset-bottom, 16px)) !important;
+      padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px)) !important;
       box-sizing: border-box !important;
     }
     #tab-home,
@@ -157,18 +158,25 @@
     #tab-stoplist,
     #tab-leaderboard,
     #tab-settings,
+    #tab-scanner,
     #homeBrandsHub,
     #homeBrandClaimsPage,
     #missionsDifficultyHub,
     #missionsListPage {
       width: 100% !important;
-      min-height: min-content !important;
+      min-height: 100% !important;
       height: auto !important;
       touch-action: pan-y !important;
       box-sizing: border-box !important;
     }
-    button, input, select, textarea, a, .brand-tab-btn, .nav-tab-btn {
-      touch-action: manipulation;
+    #mainViewport,
+    #mainViewport * {
+      touch-action: pan-y !important;
+    }
+    #mainViewport input,
+    #mainViewport textarea,
+    #mainViewport select {
+      touch-action: manipulation !important;
     }
     #appBottomNav {
       position: absolute !important;
@@ -250,30 +258,10 @@
       box-sizing: border-box !important;
     }
 
-    /* Ультра-плавные перекрывающиеся переходы без блокировки скролла */
-    @keyframes ultraTabEnterRight {
-      0% { opacity: 0; transform: translate3d(14px, 0, 0); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0); }
-    }
-    @keyframes ultraTabLeaveLeft {
-      0% { opacity: 1; transform: translate3d(0, 0, 0); }
-      100% { opacity: 0; transform: translate3d(-14px, 0, 0); }
-    }
-    @keyframes ultraTabEnterLeft {
-      0% { opacity: 0; transform: translate3d(-14px, 0, 0); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0); }
-    }
-    @keyframes ultraTabLeaveRight {
-      0% { opacity: 1; transform: translate3d(0, 0, 0); }
-      100% { opacity: 0; transform: translate3d(14px, 0, 0); }
-    }
+    /* Ультра-плавные переходы без блокировки скролла и без 3D-трансформаций */
     @keyframes softViewEnter {
-      0% { opacity: 0; transform: translate3d(0, 8px, 0); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0); }
-    }
-    @keyframes softViewExit {
-      0% { opacity: 1; transform: translate3d(0, 0, 0); }
-      100% { opacity: 0; transform: translate3d(0, -8px, 0); }
+      0% { opacity: 0; }
+      100% { opacity: 1; }
     }
     @keyframes softModalSheet {
       0% { opacity: 0; transform: translate3d(0, 20px, 0); }
@@ -283,12 +271,16 @@
       0% { opacity: 1; transform: translate3d(0, 0, 0); }
       100% { opacity: 0; transform: translate3d(0, 16px, 0); }
     }
-    .smooth-view-enter { animation: softViewEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) ease-out; }
-    .view-push-enter { animation: ultraTabEnterRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) ease-out; }
-    .view-push-leave { animation: ultraTabLeaveLeft 0.22s cubic-bezier(0.22, 1, 0.36, 1) ease-in forwards; pointer-events: none !important; }
-    .view-pop-enter { animation: ultraTabEnterLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) ease-out; }
-    .view-pop-leave { animation: ultraTabLeaveRight 0.22s cubic-bezier(0.22, 1, 0.36, 1) ease-in forwards; pointer-events: none !important; }
-    .view-crossfade-leave { animation: softViewExit 0.22s cubic-bezier(0.22, 1, 0.36, 1) ease-in forwards; pointer-events: none !important; }
+    .smooth-view-enter,
+    .view-push-enter,
+    .view-pop-enter {
+      animation: softViewEnter 0.2s ease-out forwards;
+    }
+    .view-push-leave,
+    .view-pop-leave,
+    .view-crossfade-leave {
+      display: none !important;
+    }
     .smooth-modal-enter { animation: softModalSheet 0.35s cubic-bezier(0.16, 1, 0.3, 1) ease-out; }
 
     @keyframes softBackdropFade { 0% { opacity: 0; } 100% { opacity: 1; } }
@@ -389,7 +381,7 @@
     body.dark-theme #appShell select { background-color: #0F172A !important; color: #F8FAFC !important; border-color: #334155 !important; }
   </style>
 </head>
-<body class="h-[100dvh] min-h-[100dvh] max-h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-start sm:justify-center sm:py-4 sm:px-4 select-none bg-[#F4F5F7]">
+<body class="h-[100dvh] min-h-[100dvh] max-h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-start sm:justify-center sm:py-4 sm:px-4 bg-[#F4F5F7]">
 
   <!-- Hidden file inputs for 100% reliable native phone camera & multi-photo/video upload on iOS & Android -->
   <input type="file" id="nativeCameraInput" accept="image/*" capture="environment" multiple class="hidden" onchange="handleNativeCameraFile(this, false)" />
@@ -872,7 +864,7 @@
       <section id="tab-missions" class="relative hidden p-4 space-y-3.5">
 
         <!-- ЭКРАН 1: ВЫБОР УРОВНЯ СЛОЖНОСТИ МИССИЙ (РАЗГРУЖЕННЫЙ ХАБ) -->
-        <div id="missionsDifficultyHub" class="space-y-3.5 animate-slideDown">
+        <div id="missionsDifficultyHub" class="space-y-3.5">
           <div class="bg-white p-3.5 rounded-[24px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between gap-3">
             <div>
               <div class="text-[10px] font-bold text-[#009FE3] uppercase tracking-wider">1 задание = 1 человек</div>
@@ -964,7 +956,7 @@
         </div>
 
         <!-- ЭКРАН 2: СПИСОК МИССИЙ ВЫБРАННОЙ СЛОЖНОСТИ С ДЕТАЛЬНЫМ ОПИСАНИЕМ -->
-        <div id="missionsListPage" class="hidden space-y-3 animate-slideDown">
+        <div id="missionsListPage" class="hidden space-y-3">
           <div class="bg-white p-3 rounded-[22px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between gap-2">
             <button onclick="backToMissionsHub()" class="py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs flex items-center gap-2 transition active:scale-95 shrink-0">
               <i class="fa-solid fa-arrow-left text-[11px]"></i>
@@ -8296,7 +8288,7 @@ window.triggerSmoothViewTransition = function (el, isModal, customEnterClass) {
   }, 320);
 };
 
-// Перекрывающийся (Overlapping Cross-Fade + Spring Glide) переход без резкого мигания
+// Надежный и плавный переход между экранами и вкладками без абсолютного позиционирования и поломки скролла
 window.smoothCrossfadeElements = function (fromEl, toEl, direction) {
   if (!toEl) return;
   if (fromEl === toEl) {
@@ -8305,53 +8297,31 @@ window.smoothCrossfadeElements = function (fromEl, toEl, direction) {
     return;
   }
 
-  const enterCls = direction === 'push'
-    ? 'view-push-enter'
-    : direction === 'pop'
-    ? 'view-pop-enter'
-    : 'smooth-view-enter';
-  const leaveCls = direction === 'push'
-    ? 'view-push-leave'
-    : direction === 'pop'
-    ? 'view-pop-leave'
-    : 'view-crossfade-leave';
-
-  if (fromEl && !fromEl.classList.contains('hidden')) {
-    window.cleanViewInlineLock(fromEl);
-    const topPx = fromEl.offsetTop;
-    const leftPx = fromEl.offsetLeft;
-    const widthPx = fromEl.offsetWidth;
-    if (widthPx > 0) {
-      fromEl.style.position = 'absolute';
-      fromEl.style.top = topPx + 'px';
-      fromEl.style.left = leftPx + 'px';
-      fromEl.style.width = widthPx + 'px';
-      fromEl.style.zIndex = '10';
-      fromEl.style.pointerEvents = 'none';
-      void fromEl.offsetWidth;
-      fromEl.classList.add(leaveCls);
-      fromEl._leaveTimer = setTimeout(() => {
-        fromEl.classList.add('hidden');
-        window.cleanViewInlineLock(fromEl);
-      }, 240);
-    } else {
-      fromEl.classList.add('hidden');
-      window.cleanViewInlineLock(fromEl);
-    }
-  } else if (fromEl) {
+  // 1. Моментально скрываем предыдущий элемент (никакого position: absolute, ломающего высоту скролла!)
+  if (fromEl) {
     window.cleanViewInlineLock(fromEl);
     fromEl.classList.add('hidden');
   }
 
+  // 2. Показываем целевой элемент в нормальном потоке документа
   window.cleanViewInlineLock(toEl);
   toEl.classList.remove('hidden');
-  toEl.style.position = 'relative';
-  toEl.style.zIndex = '20';
-  void toEl.offsetWidth;
-  toEl.classList.add(enterCls);
+
+  // 3. Мгновенно сбрасываем скролл контейнера наверх
+  const vp = document.getElementById('mainViewport');
+  if (vp) vp.scrollTop = 0;
+
+  // 4. Принудительный reflow, чтобы браузер сразу зарегистрировал правильный scrollHeight
+  void toEl.offsetHeight;
+
+  // 5. Легкая анимация плавного появления (без 3D-трансформаций, чтобы WebKit не отключал тач-скролл)
+  toEl.classList.add('smooth-view-enter');
   toEl._leaveTimer = setTimeout(() => {
     window.cleanViewInlineLock(toEl);
-  }, 300);
+    if (vp) {
+      vp.scrollTop = vp.scrollTop;
+    }
+  }, 220);
 };
 
 // Плавное закрытие модальных окон с fade-out + slide-down вместо резкого 0ms скрытия

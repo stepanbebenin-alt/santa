@@ -1180,7 +1180,7 @@ window.triggerSmoothViewTransition = function (el, isModal, customEnterClass) {
   }, 320);
 };
 
-// Перекрывающийся (Overlapping Cross-Fade + Spring Glide) переход без резкого мигания
+// Надежный и плавный переход между экранами и вкладками без абсолютного позиционирования и поломки скролла
 window.smoothCrossfadeElements = function (fromEl, toEl, direction) {
   if (!toEl) return;
   if (fromEl === toEl) {
@@ -1189,53 +1189,31 @@ window.smoothCrossfadeElements = function (fromEl, toEl, direction) {
     return;
   }
 
-  const enterCls = direction === 'push'
-    ? 'view-push-enter'
-    : direction === 'pop'
-    ? 'view-pop-enter'
-    : 'smooth-view-enter';
-  const leaveCls = direction === 'push'
-    ? 'view-push-leave'
-    : direction === 'pop'
-    ? 'view-pop-leave'
-    : 'view-crossfade-leave';
-
-  if (fromEl && !fromEl.classList.contains('hidden')) {
-    window.cleanViewInlineLock(fromEl);
-    const topPx = fromEl.offsetTop;
-    const leftPx = fromEl.offsetLeft;
-    const widthPx = fromEl.offsetWidth;
-    if (widthPx > 0) {
-      fromEl.style.position = 'absolute';
-      fromEl.style.top = topPx + 'px';
-      fromEl.style.left = leftPx + 'px';
-      fromEl.style.width = widthPx + 'px';
-      fromEl.style.zIndex = '10';
-      fromEl.style.pointerEvents = 'none';
-      void fromEl.offsetWidth;
-      fromEl.classList.add(leaveCls);
-      fromEl._leaveTimer = setTimeout(() => {
-        fromEl.classList.add('hidden');
-        window.cleanViewInlineLock(fromEl);
-      }, 240);
-    } else {
-      fromEl.classList.add('hidden');
-      window.cleanViewInlineLock(fromEl);
-    }
-  } else if (fromEl) {
+  // 1. Моментально скрываем предыдущий элемент (никакого position: absolute, ломающего высоту скролла!)
+  if (fromEl) {
     window.cleanViewInlineLock(fromEl);
     fromEl.classList.add('hidden');
   }
 
+  // 2. Показываем целевой элемент в нормальном потоке документа
   window.cleanViewInlineLock(toEl);
   toEl.classList.remove('hidden');
-  toEl.style.position = 'relative';
-  toEl.style.zIndex = '20';
-  void toEl.offsetWidth;
-  toEl.classList.add(enterCls);
+
+  // 3. Мгновенно сбрасываем скролл контейнера наверх
+  const vp = document.getElementById('mainViewport');
+  if (vp) vp.scrollTop = 0;
+
+  // 4. Принудительный reflow, чтобы браузер сразу зарегистрировал правильный scrollHeight
+  void toEl.offsetHeight;
+
+  // 5. Легкая анимация плавного появления (без 3D-трансформаций, чтобы WebKit не отключал тач-скролл)
+  toEl.classList.add('smooth-view-enter');
   toEl._leaveTimer = setTimeout(() => {
     window.cleanViewInlineLock(toEl);
-  }, 300);
+    if (vp) {
+      vp.scrollTop = vp.scrollTop;
+    }
+  }, 220);
 };
 
 // Плавное закрытие модальных окон с fade-out + slide-down вместо резкого 0ms скрытия
