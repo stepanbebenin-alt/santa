@@ -76,9 +76,11 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
       -webkit-text-size-adjust: 100% !important;
       -webkit-tap-highlight-color: transparent !important;
-      touch-action: pan-y !important;
-      user-select: none;
+    }
+    button, .nav-tab-btn, #appHeader, #appBottomNav {
       -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
     #desktopToolbar {
       display: none;
@@ -142,14 +144,31 @@
       min-height: 0 !important;
       width: 100% !important;
       height: 100% !important;
-      overflow-y: auto !important;
+      overflow-y: scroll !important;
       overflow-x: hidden !important;
       -webkit-overflow-scrolling: touch !important;
-      scroll-behavior: smooth !important;
+      touch-action: pan-y !important;
       padding: 0 !important;
-      padding-bottom: calc(84px + env(safe-area-inset-bottom, 14px)) !important;
+      padding-bottom: calc(84px + env(safe-area-inset-bottom, 16px)) !important;
       box-sizing: border-box !important;
-      overscroll-behavior: contain !important;
+    }
+    #tab-home,
+    #tab-missions,
+    #tab-stoplist,
+    #tab-leaderboard,
+    #tab-settings,
+    #homeBrandsHub,
+    #homeBrandClaimsPage,
+    #missionsDifficultyHub,
+    #missionsListPage {
+      width: 100% !important;
+      min-height: min-content !important;
+      height: auto !important;
+      touch-action: pan-y !important;
+      box-sizing: border-box !important;
+    }
+    button, input, select, textarea, a, .brand-tab-btn, .nav-tab-btn {
+      touch-action: manipulation;
     }
     #appBottomNav {
       position: absolute !important;
@@ -231,46 +250,46 @@
       box-sizing: border-box !important;
     }
 
-    /* Ультра-плавные перекрывающиеся переходы */
+    /* Ультра-плавные перекрывающиеся переходы без блокировки скролла */
     @keyframes ultraTabEnterRight {
-      0% { opacity: 0; transform: translate3d(22px, 0, 0) scale(0.985); filter: blur(3px); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0px); }
+      0% { opacity: 0; transform: translate3d(14px, 0, 0); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0); }
     }
     @keyframes ultraTabLeaveLeft {
-      0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0px); }
-      100% { opacity: 0; transform: translate3d(-22px, 0, 0) scale(0.98); filter: blur(3px); }
+      0% { opacity: 1; transform: translate3d(0, 0, 0); }
+      100% { opacity: 0; transform: translate3d(-14px, 0, 0); }
     }
     @keyframes ultraTabEnterLeft {
-      0% { opacity: 0; transform: translate3d(-22px, 0, 0) scale(0.985); filter: blur(3px); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0px); }
+      0% { opacity: 0; transform: translate3d(-14px, 0, 0); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0); }
     }
     @keyframes ultraTabLeaveRight {
-      0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0px); }
-      100% { opacity: 0; transform: translate3d(22px, 0, 0) scale(0.98); filter: blur(3px); }
+      0% { opacity: 1; transform: translate3d(0, 0, 0); }
+      100% { opacity: 0; transform: translate3d(14px, 0, 0); }
     }
     @keyframes softViewEnter {
-      0% { opacity: 0; transform: translate3d(0, 12px, 0) scale(0.988); filter: blur(2.5px); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0px); }
+      0% { opacity: 0; transform: translate3d(0, 8px, 0); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0); }
     }
     @keyframes softViewExit {
-      0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0px); }
-      100% { opacity: 0; transform: translate3d(0, -8px, 0) scale(0.982); filter: blur(2.5px); }
+      0% { opacity: 1; transform: translate3d(0, 0, 0); }
+      100% { opacity: 0; transform: translate3d(0, -8px, 0); }
     }
     @keyframes softModalSheet {
-      0% { opacity: 0; transform: translate3d(0, 24px, 0) scale(0.975); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+      0% { opacity: 0; transform: translate3d(0, 20px, 0); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0); }
     }
     @keyframes softModalSheetExit {
-      0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-      100% { opacity: 0; transform: translate3d(0, 18px, 0) scale(0.975); }
+      0% { opacity: 1; transform: translate3d(0, 0, 0); }
+      100% { opacity: 0; transform: translate3d(0, 16px, 0); }
     }
-    .smooth-view-enter { animation: softViewEnter 0.48s cubic-bezier(0.16, 1, 0.3, 1) both; }
-    .view-push-enter { animation: ultraTabEnterRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
-    .view-push-leave { animation: ultraTabLeaveLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards; pointer-events: none !important; }
-    .view-pop-enter { animation: ultraTabEnterLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
-    .view-pop-leave { animation: ultraTabLeaveRight 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards; pointer-events: none !important; }
-    .view-crossfade-leave { animation: softViewExit 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards; pointer-events: none !important; }
-    .smooth-modal-enter { animation: softModalSheet 0.46s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .smooth-view-enter { animation: softViewEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) ease-out; }
+    .view-push-enter { animation: ultraTabEnterRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) ease-out; }
+    .view-push-leave { animation: ultraTabLeaveLeft 0.22s cubic-bezier(0.22, 1, 0.36, 1) ease-in forwards; pointer-events: none !important; }
+    .view-pop-enter { animation: ultraTabEnterLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) ease-out; }
+    .view-pop-leave { animation: ultraTabLeaveRight 0.22s cubic-bezier(0.22, 1, 0.36, 1) ease-in forwards; pointer-events: none !important; }
+    .view-crossfade-leave { animation: softViewExit 0.22s cubic-bezier(0.22, 1, 0.36, 1) ease-in forwards; pointer-events: none !important; }
+    .smooth-modal-enter { animation: softModalSheet 0.35s cubic-bezier(0.16, 1, 0.3, 1) ease-out; }
 
     @keyframes softBackdropFade { 0% { opacity: 0; } 100% { opacity: 1; } }
     @keyframes softBackdropFadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
@@ -551,7 +570,7 @@
     </div>
 
     <!-- MAIN SCROLLABLE VIEWPORT -->
-    <main class="flex-1 overflow-y-auto overflow-x-hidden pb-[calc(80px+env(safe-area-inset-bottom,16px))] relative overscroll-contain" id="mainViewport">
+    <main class="flex-1 overflow-y-scroll overflow-x-hidden pb-[calc(84px+env(safe-area-inset-bottom,16px))] relative" id="mainViewport">
 
       <!-- =================================================================== -->
       <!-- TAB 1: 🏠 ГЛАВНАЯ (ЭКРАН 1: 5 БРЕНДОВ -> ПЕРЕХОД НА ЭКРАН 2: СИГНАЛЫ) -->
@@ -8260,6 +8279,10 @@ window.cleanViewInlineLock = function (el) {
   el.style.width = '';
   el.style.zIndex = '';
   el.style.pointerEvents = '';
+  el.style.transform = '';
+  el.style.filter = '';
+  el.style.webkitTransform = '';
+  el.style.webkitFilter = '';
 };
 
 window.triggerSmoothViewTransition = function (el, isModal, customEnterClass) {
@@ -8268,6 +8291,9 @@ window.triggerSmoothViewTransition = function (el, isModal, customEnterClass) {
   const cls = isModal ? 'smooth-modal-enter' : (customEnterClass || 'smooth-view-enter');
   void el.offsetWidth;
   el.classList.add(cls);
+  el._leaveTimer = setTimeout(() => {
+    window.cleanViewInlineLock(el);
+  }, 320);
 };
 
 // Перекрывающийся (Overlapping Cross-Fade + Spring Glide) переход без резкого мигания
@@ -8307,9 +8333,10 @@ window.smoothCrossfadeElements = function (fromEl, toEl, direction) {
       fromEl._leaveTimer = setTimeout(() => {
         fromEl.classList.add('hidden');
         window.cleanViewInlineLock(fromEl);
-      }, 330);
+      }, 240);
     } else {
       fromEl.classList.add('hidden');
+      window.cleanViewInlineLock(fromEl);
     }
   } else if (fromEl) {
     window.cleanViewInlineLock(fromEl);
@@ -8323,9 +8350,8 @@ window.smoothCrossfadeElements = function (fromEl, toEl, direction) {
   void toEl.offsetWidth;
   toEl.classList.add(enterCls);
   toEl._leaveTimer = setTimeout(() => {
-    toEl.style.position = '';
-    toEl.style.zIndex = '';
-  }, 500);
+    window.cleanViewInlineLock(toEl);
+  }, 300);
 };
 
 // Плавное закрытие модальных окон с fade-out + slide-down вместо резкого 0ms скрытия
@@ -8355,7 +8381,7 @@ window.openBrandClaimsPage = function (brandKey) {
   }
 
   const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+  if (vp) vp.scrollTop = 0;
 };
 
 window.backToBrandsHub = function (silentReset) {
@@ -8390,7 +8416,7 @@ window.backToBrandsHub = function (silentReset) {
 
   if (!silentReset) {
     const vp = document.getElementById('mainViewport');
-    if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+    if (vp) vp.scrollTop = 0;
   }
 };
 
@@ -9004,7 +9030,7 @@ window.openMissionsDifficultyPage = function (diffKey) {
 
   renderMissionsTab();
   const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+  if (vp) vp.scrollTop = 0;
 };
 
 window.backToMissionsHub = function (silentReset) {
@@ -9022,7 +9048,7 @@ window.backToMissionsHub = function (silentReset) {
   } else {
     window.smoothCrossfadeElements(page, hub, 'pop');
     const vp = document.getElementById('mainViewport');
-    if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+    if (vp) vp.scrollTop = 0;
   }
 };
 
@@ -9781,7 +9807,7 @@ window.switchMainTab = function (tabKey) {
   }
 
   const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+  if (vp) vp.scrollTop = 0;
   if (typeof window.syncSettingsUI === 'function') window.syncSettingsUI();
 };
 

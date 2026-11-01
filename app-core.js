@@ -1163,6 +1163,10 @@ window.cleanViewInlineLock = function (el) {
   el.style.width = '';
   el.style.zIndex = '';
   el.style.pointerEvents = '';
+  el.style.transform = '';
+  el.style.filter = '';
+  el.style.webkitTransform = '';
+  el.style.webkitFilter = '';
 };
 
 window.triggerSmoothViewTransition = function (el, isModal, customEnterClass) {
@@ -1171,6 +1175,9 @@ window.triggerSmoothViewTransition = function (el, isModal, customEnterClass) {
   const cls = isModal ? 'smooth-modal-enter' : (customEnterClass || 'smooth-view-enter');
   void el.offsetWidth;
   el.classList.add(cls);
+  el._leaveTimer = setTimeout(() => {
+    window.cleanViewInlineLock(el);
+  }, 320);
 };
 
 // Перекрывающийся (Overlapping Cross-Fade + Spring Glide) переход без резкого мигания
@@ -1210,9 +1217,10 @@ window.smoothCrossfadeElements = function (fromEl, toEl, direction) {
       fromEl._leaveTimer = setTimeout(() => {
         fromEl.classList.add('hidden');
         window.cleanViewInlineLock(fromEl);
-      }, 330);
+      }, 240);
     } else {
       fromEl.classList.add('hidden');
+      window.cleanViewInlineLock(fromEl);
     }
   } else if (fromEl) {
     window.cleanViewInlineLock(fromEl);
@@ -1226,9 +1234,8 @@ window.smoothCrossfadeElements = function (fromEl, toEl, direction) {
   void toEl.offsetWidth;
   toEl.classList.add(enterCls);
   toEl._leaveTimer = setTimeout(() => {
-    toEl.style.position = '';
-    toEl.style.zIndex = '';
-  }, 500);
+    window.cleanViewInlineLock(toEl);
+  }, 300);
 };
 
 // Плавное закрытие модальных окон с fade-out + slide-down вместо резкого 0ms скрытия
@@ -1258,7 +1265,7 @@ window.openBrandClaimsPage = function (brandKey) {
   }
 
   const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+  if (vp) vp.scrollTop = 0;
 };
 
 window.backToBrandsHub = function (silentReset) {
@@ -1293,7 +1300,7 @@ window.backToBrandsHub = function (silentReset) {
 
   if (!silentReset) {
     const vp = document.getElementById('mainViewport');
-    if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+    if (vp) vp.scrollTop = 0;
   }
 };
 
@@ -1907,7 +1914,7 @@ window.openMissionsDifficultyPage = function (diffKey) {
 
   renderMissionsTab();
   const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+  if (vp) vp.scrollTop = 0;
 };
 
 window.backToMissionsHub = function (silentReset) {
@@ -1925,7 +1932,7 @@ window.backToMissionsHub = function (silentReset) {
   } else {
     window.smoothCrossfadeElements(page, hub, 'pop');
     const vp = document.getElementById('mainViewport');
-    if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+    if (vp) vp.scrollTop = 0;
   }
 };
 
@@ -2684,7 +2691,7 @@ window.switchMainTab = function (tabKey) {
   }
 
   const vp = document.getElementById('mainViewport');
-  if (vp) vp.scrollTo({ top: 0, behavior: 'smooth' });
+  if (vp) vp.scrollTop = 0;
   if (typeof window.syncSettingsUI === 'function') window.syncSettingsUI();
 };
 
