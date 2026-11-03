@@ -307,19 +307,72 @@ window.clearGlobalSearch = function () {
 // ============================================================================
 // EXPRESS 1-TAP SIGNAL HANDLER
 // ============================================================================
-window.submitExpressReport = function () {
+function openExpressReportModal(brandKey) {
+  const activeKey = brandKey || (window.state && window.state.activeBrand) || 'santa';
+  const cfg = (window.BRAND_CONFIG && window.BRAND_CONFIG[activeKey]) || (window.BRAND_CONFIG && window.BRAND_CONFIG.santa) || { name: 'Санта Ритейл' };
+
+  window.currentModalPayload = {
+    type: 'claim',
+    typeLabel: 'Экспресс-сигнал (+1 б.)',
+    critical: false,
+    brandName: cfg.name || 'Санта Ритейл',
+    categoryTitle: 'Экспресс-контроль витрины',
+    title: 'Экспресс-сигнал: оперативный контроль торговой точки',
+    points: 1,
+    hint: 'Сфотографируйте нарушение, полку или витрину — ИИ проверит снимок и зафиксирует экспресс-сигнал.',
+    voiceSample: 'Экспресс-проверка: зафиксировано оперативное замечание в торговом зале.'
+  };
+
+  showReportModalUI();
+
+  const commentInput = document.getElementById('reportCommentInput');
+  if (commentInput && !commentInput.value.trim()) {
+    commentInput.value = 'Экспресс-контроль витрины и зала';
+  }
+
+  const expressBanner = document.getElementById('expressSignalBanner');
+  if (expressBanner) expressBanner.classList.remove('hidden');
+  const expressText = document.getElementById('expressDetectedBrandText');
+  if (expressText) expressText.textContent = cfg.name || 'Санта Ритейл';
+
+  if (typeof showToast === 'function') {
+    showToast('⚡ Экспресс-сигнал', 'Сделайте снимок — ИИ проверит витрину и зафиксирует сигнал.', 'info');
+  }
+}
+
+function submitExpressReport() {
+  const reportModal = document.getElementById('reportModal');
+  const isModalOpen = reportModal && !reportModal.classList.contains('hidden');
+
+  if (!isModalOpen || !window.currentModalPayload) {
+    openExpressReportModal();
+    return;
+  }
+
   const commentInput = document.getElementById('reportCommentInput');
   if (commentInput && !commentInput.value.trim()) {
     const payload = window.currentModalPayload;
-    commentInput.value = (payload && payload.title) ? `Экспресс: ${payload.title}` : 'Экспресс-проверка: витрина подтверждена по фото';
+    commentInput.value = (payload && payload.title) ? `Экспресс: ${payload.title}` : 'Экспресс-контроль: витрина подтверждена по фото';
   }
+
+  // Если живая камера работает, но снимок еще не сделан — автоматически захватываем кадр
+  const videoEl = document.getElementById('reportLiveVideo');
+  if (!window.mediaCaptured && window.reportMediaStream && videoEl && videoEl.readyState >= 2) {
+    if (typeof triggerInAppCapture === 'function') {
+      triggerInAppCapture();
+    }
+  }
+
   if (typeof window.autoTriggerAiAnalysis === 'function') {
     window.autoTriggerAiAnalysis(0);
   }
   setTimeout(() => {
     window.submitReport(false);
   }, 120);
-};
+}
+
+window.openExpressReportModal = openExpressReportModal;
+window.submitExpressReport = submitExpressReport;
 
 window.toggleClaimBrandDropdown = function (forceState) {
   const tabs = document.getElementById('claimModalBrandTabs');
@@ -3525,3 +3578,5 @@ window.selectBrand = selectBrand;
 window.saveState = saveState;
 
 window.openBrandClaimsPage = openBrandClaimsPage;
+window.openExpressReportModal = openExpressReportModal;
+window.submitExpressReport = submitExpressReport;

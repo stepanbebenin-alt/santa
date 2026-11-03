@@ -530,7 +530,7 @@
                 </div>
                 <span class="text-[11px] font-bold text-slate-700">Сигнал</span>
               </button>
-              <button onclick="submitExpressReport()" class="flex flex-col items-center gap-1.5 group">
+              <button onclick="openExpressReportModal()" class="flex flex-col items-center gap-1.5 group">
                 <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-105 active:scale-95 transition">
                   <i class="fa-solid fa-bolt text-amber-500"></i>
                 </div>
@@ -3392,17 +3392,18 @@ window.BRAND_CONFIG = {
         ]
       },
       {
-        title: '7. Холодильники, градусники, чистота зала и тележки',
+        title: '7. Климат, кондиционирование, холодильники и чистота зала',
         icon: 'fa-temperature-arrow-up',
         items: [
           { id: 'sr_t1', label: 'Градусник в красной зоне (молочка >+6°C, рыба >+4°C, морозилка >-15°C)', points: 2, critical: true, hint: 'КРИТИЧЕСКИЙ СИГНАЛ (+2 балла): Сфотографируйте крупно цифры на термометре и общий план витрины.', voiceSample: 'Термометр в холодильной горке с молочной продукцией показывает плюс десять градусов.' },
+          { id: 'sr_ac1', label: 'Проблемы с кондиционированием: не работает кондиционер, духота/сильная жара или капает конденсат', points: 1, critical: false, hint: 'Сфотографируйте блок кондиционера, вентиляционную решётку или термометр в торговом зале и опишите проблему.', voiceSample: 'В торговом зале не работает кондиционер, очень душно и жарко, капает конденсат с кондиционера.' },
           { id: 'sr_t2', label: 'Дефрост заморозки: ледяная корка и снег в пачках, мягкое мороженое, слипшиеся пельмени', points: 1, critical: false, hint: 'Сфотографируйте упаковку со снегом/льдом внутри морозильной бонеты.', voiceSample: 'В морозильном ларе мороженое мягкое и деформированное, пачки покрыты инеем.' },
           { id: 'sr_t4', label: 'Паллета с молочкой, рыбой или заморозкой брошена в теплом проходе (>20 мин)', points: 1, critical: false, hint: 'Снимите паллету с охлажденным товаром в теплом проходе.', voiceSample: 'Паллета с охлажденным молоком и сметаной стоит в теплом проходе без разгрузки.' },
           { id: 'sr_t4b', label: 'Течь воды / лужа на полу под холодильной витриной или капает конденсат', points: 1, critical: false, hint: 'Сфотографируйте лужу или тряпку под холодильной горкой.', voiceSample: 'Из-под холодильной витрины с напитками натекла большая лужа в проход.' },
           { id: 'sr_c1', label: 'Грязный или скользкий пол, раздавленный товар, переполненная урна у входа', points: 1, critical: false, hint: 'Сфотографируйте пол или входную группу магазина.', voiceSample: 'На входе в магазин грязный скользкий пол и переполнена урна чеками.' },
           { id: 'sr_c2', label: 'Мусор в покупательских корзинках, сломанные колеса тележек или закрыты ячейки хранения', points: 1, critical: false, hint: 'Сфотографируйте стопку корзинок, тележку или камеры хранения.', voiceSample: 'В покупательских корзинках на входе лежат старые чеки и упаковки, у тележки заклинило колесо.' },
           { id: 'sr_c3', label: 'Проход заблокирован паллетами, коробками или рохлей (не проехать с коляской/тележкой)', points: 1, critical: false, hint: 'Снимите узкий заставленный проход общим планом.', voiceSample: 'Центральный проход к кассам перекрыт паллетами и пустым картоном.' },
-          { id: 'sr_t6', label: 'Другое (Холодильники, освещение и чистота зала)', points: 1, critical: false, isOther: true, hint: 'Сфотографируйте проблему и добавьте комментарий.', voiceSample: 'В торговом зале душно, не работает кондиционер и мигает лампа.' }
+          { id: 'sr_t6', label: 'Другое (Климат, оборудование и чистота зала)', points: 1, critical: false, isOther: true, hint: 'Сфотографируйте проблему и добавьте комментарий.', voiceSample: 'В торговом зале мигает лампа или не работает оборудование.' }
         ]
       }
     ]
@@ -5873,7 +5874,7 @@ const AI_STOP_STEMS = new Set([
 ]);
 
 const AI_BRAND_KEYWORDS = {
-  'Санта Ритейл': ['касс', 'ценник', 'очеред', 'полк', 'стеллаж', 'тележк', 'корзин', 'чек', 'акци', 'выкладк', 'продавц', 'охран', 'проход', 'зал'],
+  'Санта Ритейл': ['касс', 'ценник', 'очеред', 'полк', 'стеллаж', 'тележк', 'корзин', 'чек', 'акци', 'выкладк', 'продавц', 'охран', 'проход', 'зал', 'кондицион', 'климат', 'вентиляц'],
   'Санта Бремор': ['рыб', 'икр', 'краб', 'пресерв', 'сельд', 'морепр', 'кальмар', 'лосос', 'форел', 'филе', 'креветк', 'бремор', 'сурими'],
   'Савушкин': ['молок', 'сыр', 'йогурт', 'творог', 'кефир', 'сметан', 'масл', 'ряженк', 'сырок', 'брест', 'савушк', 'теос', 'оптимал'],
   'Санта Рест': ['блюд', 'кафе', 'официант', 'пицц', 'ресторан', 'заказ', 'кухн', 'повар', 'меню', 'бургер', 'кофе', 'столик', 'выпечк', 'поднос'],
@@ -5899,7 +5900,8 @@ const AI_DETAIL_PATTERNS = [
 
 const AI_PLACE_STEMS = [
   'полк', 'витрин', 'касс', 'холодильн', 'стеллаж', 'ряд', 'зал', 'вход', 'прилав',
-  'морозил', 'горк', 'склад', 'номер', 'ресепшн', 'стол', 'кухн', 'пекарн', 'отдел', 'секци'
+  'морозил', 'горк', 'склад', 'номер', 'ресепшн', 'стол', 'кухн', 'пекарн', 'отдел', 'секци',
+  'кондицион', 'климат', 'вентиляц'
 ];
 
 function aiEscape(s) {
@@ -7327,19 +7329,72 @@ window.clearGlobalSearch = function () {
 // ============================================================================
 // EXPRESS 1-TAP SIGNAL HANDLER
 // ============================================================================
-window.submitExpressReport = function () {
+function openExpressReportModal(brandKey) {
+  const activeKey = brandKey || (window.state && window.state.activeBrand) || 'santa';
+  const cfg = (window.BRAND_CONFIG && window.BRAND_CONFIG[activeKey]) || (window.BRAND_CONFIG && window.BRAND_CONFIG.santa) || { name: 'Санта Ритейл' };
+
+  window.currentModalPayload = {
+    type: 'claim',
+    typeLabel: 'Экспресс-сигнал (+1 б.)',
+    critical: false,
+    brandName: cfg.name || 'Санта Ритейл',
+    categoryTitle: 'Экспресс-контроль витрины',
+    title: 'Экспресс-сигнал: оперативный контроль торговой точки',
+    points: 1,
+    hint: 'Сфотографируйте нарушение, полку или витрину — ИИ проверит снимок и зафиксирует экспресс-сигнал.',
+    voiceSample: 'Экспресс-проверка: зафиксировано оперативное замечание в торговом зале.'
+  };
+
+  showReportModalUI();
+
+  const commentInput = document.getElementById('reportCommentInput');
+  if (commentInput && !commentInput.value.trim()) {
+    commentInput.value = 'Экспресс-контроль витрины и зала';
+  }
+
+  const expressBanner = document.getElementById('expressSignalBanner');
+  if (expressBanner) expressBanner.classList.remove('hidden');
+  const expressText = document.getElementById('expressDetectedBrandText');
+  if (expressText) expressText.textContent = cfg.name || 'Санта Ритейл';
+
+  if (typeof showToast === 'function') {
+    showToast('⚡ Экспресс-сигнал', 'Сделайте снимок — ИИ проверит витрину и зафиксирует сигнал.', 'info');
+  }
+}
+
+function submitExpressReport() {
+  const reportModal = document.getElementById('reportModal');
+  const isModalOpen = reportModal && !reportModal.classList.contains('hidden');
+
+  if (!isModalOpen || !window.currentModalPayload) {
+    openExpressReportModal();
+    return;
+  }
+
   const commentInput = document.getElementById('reportCommentInput');
   if (commentInput && !commentInput.value.trim()) {
     const payload = window.currentModalPayload;
-    commentInput.value = (payload && payload.title) ? `Экспресс: ${payload.title}` : 'Экспресс-проверка: витрина подтверждена по фото';
+    commentInput.value = (payload && payload.title) ? `Экспресс: ${payload.title}` : 'Экспресс-контроль: витрина подтверждена по фото';
   }
+
+  // Если живая камера работает, но снимок еще не сделан — автоматически захватываем кадр
+  const videoEl = document.getElementById('reportLiveVideo');
+  if (!window.mediaCaptured && window.reportMediaStream && videoEl && videoEl.readyState >= 2) {
+    if (typeof triggerInAppCapture === 'function') {
+      triggerInAppCapture();
+    }
+  }
+
   if (typeof window.autoTriggerAiAnalysis === 'function') {
     window.autoTriggerAiAnalysis(0);
   }
   setTimeout(() => {
     window.submitReport(false);
   }, 120);
-};
+}
+
+window.openExpressReportModal = openExpressReportModal;
+window.submitExpressReport = submitExpressReport;
 
 window.toggleClaimBrandDropdown = function (forceState) {
   const tabs = document.getElementById('claimModalBrandTabs');
@@ -10545,6 +10600,8 @@ window.selectBrand = selectBrand;
 window.saveState = saveState;
 
 window.openBrandClaimsPage = openBrandClaimsPage;
+window.openExpressReportModal = openExpressReportModal;
+window.submitExpressReport = submitExpressReport;
 </script>
 </body>
 </html>
