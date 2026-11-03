@@ -400,7 +400,7 @@ try {
 function createZeroDefaultState() {
   return {
     userId: 'u_' + Math.random().toString(36).slice(2, 10),
-    appTitleMode: 'Скажи Санте', // Можно переключать между «Скажи Санте» и «Санта.Радар»
+    appTitleMode: 'Санта.Радар', // По умолчанию «Санта.Радар»
     onboarded: false,
     userName: '',
     userPhone: '',
@@ -911,8 +911,8 @@ function updateAllUI() {
   const userRank = userIdx >= 0 ? userIdx + 1 : 1;
   const totalParticipants = allPlayers.length;
 
-  // Название приложения («Скажи Санте» или «Санта.Радар»)
-  const appTitle = window.state.appTitleMode || 'Скажи Санте';
+  // Название приложения («Санта.Радар»)
+  const appTitle = window.state.appTitleMode || 'Санта.Радар';
   const headerTitleEl = document.getElementById('headerAppTitleText');
   if (headerTitleEl) headerTitleEl.textContent = appTitle;
   const splashTitleEl = document.getElementById('splashAppTitle');
@@ -941,12 +941,13 @@ function updateAllUI() {
       : `#${userRank} место • ${window.state.userRole || 'Наблюдатель'}`;
   }
   const roleVal = window.state.userRole || 'Наблюдатель';
+  const shortRole = roleVal.includes('Спецагент') ? 'Спецагент' : 'Наблюдатель';
   const msRoleEl = document.getElementById('missionsRoleStatusText');
   if (msRoleEl) msRoleEl.textContent = roleVal;
-  document.getElementById('roleHeaderBadge').innerHTML = `<span>${roleVal}</span><i class="fa-solid fa-repeat text-[8px] opacity-80"></i>`;
+  document.getElementById('roleHeaderBadge').innerHTML = `<span>${shortRole}</span><i class="fa-solid fa-repeat text-[8px] opacity-80"></i>`;
   document.getElementById('headerUserSubtitle').textContent = window.state.userName
-    ? `${window.state.userName} • ${window.state.userDivision}`
-    : 'Мониторинг качества сети «Санта»';
+    ? `${window.state.userName} • ${window.state.userDivision || 'Санта'}`
+    : 'Стандарты ритейла и качества сети';
   document.getElementById('headerRankText').textContent = ptsVal < 0
     ? 'В минусе (штраф)'
     : ptsVal === 0
@@ -1307,8 +1308,8 @@ function openBrandClaimsPage(brandKey) {
 
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
   if (backHomeBtn) {
-    backHomeBtn.classList.remove('hidden');
-    backHomeBtn.classList.add('flex');
+    backHomeBtn.classList.add('hidden');
+    backHomeBtn.classList.remove('flex');
   }
 
   const vp = document.getElementById('mainViewport');
@@ -2674,16 +2675,11 @@ function switchMainTab(tabKey) {
     }
   });
 
-  // Кнопка быстрого возврата «🏠 Главная» в верхней шапке
+  // Кнопка быстрого возврата на главную — иконка домика сверху слева
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
   if (backHomeBtn) {
-    if (tabKey === 'home') {
-      backHomeBtn.classList.add('hidden');
-      backHomeBtn.classList.remove('flex');
-    } else {
-      backHomeBtn.classList.remove('hidden');
-      backHomeBtn.classList.add('flex');
-    }
+    backHomeBtn.classList.add('hidden');
+    backHomeBtn.classList.remove('flex');
   }
 
   const vp = document.getElementById('mainViewport');
@@ -3508,7 +3504,7 @@ function playSplashScreen(forcedName) {
   const titleEl = document.getElementById('splashAppTitle');
   if (!splash) return;
 
-  if (titleEl) titleEl.textContent = window.state.appTitleMode || 'Скажи Санте';
+  if (titleEl) titleEl.textContent = window.state.appTitleMode || 'Санта.Радар';
   splash.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
   splash.classList.add('opacity-100');
   if (bar) {
@@ -3526,9 +3522,9 @@ function playSplashScreen(forcedName) {
 };
 
 window.toggleAppTitleName = function () {
-  window.state.appTitleMode = (window.state.appTitleMode === 'Санта.Радар')
-    ? 'Скажи Санте'
-    : 'Санта.Радар';
+  window.state.appTitleMode = (window.state.appTitleMode === 'Скажи Санте')
+    ? 'Санта.Радар'
+    : 'Скажи Санте';
   saveState();
   updateAllUI();
   playSplashScreen();
@@ -3582,8 +3578,12 @@ window.addEventListener('DOMContentLoaded', function () {
   setInterval(pollServerState, 4000);
 
   if (viewParam) {
-    const splash = document.getElementById('splashScreen');
-    if (splash) splash.style.display = 'none';
+    const splash = document.getElementById('santaSplashScreen');
+    if (splash) {
+      splash.classList.add('hidden');
+      splash.classList.remove('opacity-100');
+      splash.style.display = 'none';
+    }
     if (viewParam === 'login') {
       window.isSessionAuthenticated = false;
       setTimeout(() => openOnboardingModal(false), 50);
