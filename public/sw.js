@@ -1,4 +1,4 @@
-const CACHE_NAME = 'santa-radar-v9';
+const CACHE_NAME = 'santa-radar-v10';
 const ASSETS = [
   './manifest.json',
   './assets/logos/santa_retail.png'

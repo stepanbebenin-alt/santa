@@ -248,35 +248,122 @@
     .theme-transition { transition: background-color 0.35s ease, border-color 0.35s ease, color 0.25s ease, box-shadow 0.35s ease; }
     html.large-text-mode { font-size: 108%; }
 
-    /* REVOLUT DARK MODE THEME */
-    body.dark-theme { background-color: #050811 !important; color: #f8fafc !important; }
-    body.dark-theme #appShell { background-color: #0B0F19 !important; border-color: #1E293B !important; }
-    body.dark-theme #desktopToolbar { background-color: rgba(15, 23, 42, 0.95) !important; border-color: #1E293B !important; color: #e2e8f0 !important; }
+    /* ========================================================================== */
+    /* DARK MODE THEME STYLES (100% VALID STANDARD CSS)                          */
+    /* ========================================================================== */
+    body.dark-theme {
+      background-color: #070B14 !important;
+      color: #F8FAFC !important;
+    }
+    body.dark-theme #appShell {
+      background-color: #0B1120 !important;
+      border-color: #1E293B !important;
+    }
+    body.dark-theme #mainViewport {
+      background-color: #0B1120 !important;
+    }
+    body.dark-theme #desktopToolbar {
+      background-color: rgba(15, 23, 42, 0.95) !important;
+      border-color: #1E293B !important;
+      color: #E2E8F0 !important;
+    }
+    body.dark-theme #desktopToolbar .bg-slate-100 {
+      background-color: #1E293B !important;
+      color: #CBD5E1 !important;
+    }
+    body.dark-theme #desktopToolbar .text-slate-900,
+    body.dark-theme #desktopToolbar .text-slate-700 {
+      color: #F8FAFC !important;
+    }
+
+    /* Cards, Widgets & Containers in Dark Mode */
     body.dark-theme #appShell .bg-white,
-    body.dark-theme #appShell .bg-white/95,
-    body.dark-theme #appShell .bg-white/90 { background-color: #151C2C !important; color: #f8fafc; }
-    body.dark-theme #appShell #santaSplashScreen .bg-white { background-color: #ffffff !important; color: #009FE3 !important; }
-    body.dark-theme #appShell .bg-[#F4F5F7],
+    body.dark-theme #appShell [class*="bg-white"],
     body.dark-theme #appShell .bg-slate-50,
-    body.dark-theme #appShell .bg-slate-50/70,
-    body.dark-theme #appShell .bg-slate-50/50,
+    body.dark-theme #appShell [class*="bg-slate-50"],
     body.dark-theme #appShell .bg-slate-100,
-    body.dark-theme #appShell .bg-slate-100/80 { background-color: #1E293B !important; }
+    body.dark-theme #appShell [class*="bg-slate-100"],
+    body.dark-theme #appShell [class*="bg-[#F4F5F7]"] {
+      background-color: #151E32 !important;
+      color: #F8FAFC !important;
+    }
+
+    /* Keep splash screen pure white */
+    body.dark-theme #appShell #santaSplashScreen,
+    body.dark-theme #appShell #santaSplashScreen .bg-white {
+      background-color: #FFFFFF !important;
+      color: #009FE3 !important;
+    }
+
+    /* Modal Dialogs in Dark Mode */
+    body.dark-theme .app-modal-dialog,
+    body.dark-theme #appShell .app-modal-dialog {
+      background-color: #111827 !important;
+      color: #F8FAFC !important;
+      border-color: #1E293B !important;
+    }
+
+    /* Bottom Navigation Bar in Dark Mode */
+    body.dark-theme #appBottomNav {
+      background: rgba(15, 23, 42, 0.96) !important;
+      border-top-color: #1E293B !important;
+    }
+    body.dark-theme #appBottomNav .text-slate-400 {
+      color: #64748B !important;
+    }
+    body.dark-theme #appBottomNav .text-slate-700 {
+      color: #E2E8F0 !important;
+    }
+
+    /* Text Colors in Dark Mode */
     body.dark-theme #appShell .text-slate-900,
     body.dark-theme #appShell .text-slate-800,
-    body.dark-theme #appShell .text-slate-700 { color: #F1F5F9 !important; }
+    body.dark-theme #appShell .text-slate-700 {
+      color: #F1F5F9 !important;
+    }
     body.dark-theme #appShell .text-slate-600,
-    body.dark-theme #appShell .text-slate-500 { color: #94A3B8 !important; }
-    body.dark-theme #appShell .border-slate-200,
-    body.dark-theme #appShell .border-slate-200/60,
+    body.dark-theme #appShell .text-slate-500 {
+      color: #94A3B8 !important;
+    }
+    body.dark-theme #appShell .text-slate-400 {
+      color: #64748B !important;
+    }
+
+    /* Borders & Dividers in Dark Mode */
     body.dark-theme #appShell .border-slate-100,
-    body.dark-theme #appShell .border-slate-300 { border-color: #263147 !important; }
-    body.dark-theme #appShell .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
-    body.dark-theme #appShell .divide-slate-100/80 > :not([hidden]) ~ :not([hidden]),
-    body.dark-theme #appShell .divide-slate-100/70 > :not([hidden]) ~ :not([hidden]) { border-color: #1E293B !important; }
-    body.dark-theme #appShell input:not([type="checkbox"]),
+    body.dark-theme #appShell .border-slate-200,
+    body.dark-theme #appShell .border-slate-300,
+    body.dark-theme #appShell [class*="border-slate-"] {
+      border-color: #1E293B !important;
+    }
+    body.dark-theme #appShell [class*="divide-slate-"] > :not([hidden]) ~ :not([hidden]) {
+      border-color: #1E293B !important;
+    }
+
+    /* Inputs, Textareas & Selects in Dark Mode */
+    body.dark-theme #appShell input:not([type="checkbox"]):not([type="radio"]),
     body.dark-theme #appShell textarea,
-    body.dark-theme #appShell select { background-color: #0F172A !important; color: #F8FAFC !important; border-color: #334155 !important; }
+    body.dark-theme #appShell select {
+      background-color: #0B1120 !important;
+      color: #F8FAFC !important;
+      border-color: #334155 !important;
+    }
+    body.dark-theme #appShell input::placeholder,
+    body.dark-theme #appShell textarea::placeholder {
+      color: #64748B !important;
+    }
+
+    /* Badges & Chips in Dark Mode */
+    body.dark-theme [class*="bg-sky-50"] { background-color: rgba(0, 159, 227, 0.16) !important; }
+    body.dark-theme [class*="bg-emerald-50"] { background-color: rgba(16, 185, 129, 0.16) !important; }
+    body.dark-theme [class*="bg-amber-50"] { background-color: rgba(245, 158, 11, 0.16) !important; }
+    body.dark-theme [class*="bg-rose-50"] { background-color: rgba(244, 63, 94, 0.16) !important; }
+
+    /* Top Left Home Button in Dark Mode */
+    body.dark-theme #headerHomeLogoBtn {
+      background-color: #FFFFFF !important;
+      color: #009FE3 !important;
+    }
   </style>
 </head>
 <body class="h-[100dvh] min-h-[100dvh] max-h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-start sm:justify-center sm:py-4 sm:px-4 bg-[#F4F5F7]">
@@ -402,15 +489,14 @@
     <!-- REVOLUT-STYLE CLEAN HEADER -->
     <header id="appHeader" class="theme-transition">
       <div class="flex items-center justify-between gap-2 w-full">
-        <!-- Left: Home / Avatar + App Name + Role -->
+        <!-- Left: Home / House Icon + App Name + Role -->
         <div class="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
-          <button onclick="switchMainTab('home')" id="headerHomeLogoBtn" class="w-8 h-8 rounded-full bg-white p-1 flex items-center justify-center shrink-0 shadow-sm hover:opacity-95 active:scale-95 transition overflow-hidden" title="На главный экран">
-            <img id="headerBrandLogoImg" src="data:image/png;base64,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" alt="Санта" class="w-full h-full object-contain" />
-            <i class="fa-solid fa-cart-shopping text-white text-xs hidden" id="headerBrandIcon"></i>
+          <button onclick="navigateHomeFull()" id="headerHomeLogoBtn" class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm hover:opacity-95 active:scale-95 transition text-[#009FE3]" title="На главную страницу">
+            <i class="fa-solid fa-house text-sm" id="headerHomeIcon"></i>
           </button>
           <div class="min-w-0 flex-1 overflow-hidden">
             <div class="flex items-center gap-1.5 min-w-0">
-              <button onclick="switchMainTab('home')" id="headerAppTitleText" class="font-black text-sm tracking-tight leading-none hover:opacity-90 transition truncate" title="Вернуться на главный экран">
+              <button onclick="navigateHomeFull()" id="headerAppTitleText" class="font-black text-sm tracking-tight leading-none hover:opacity-90 transition truncate" title="Вернуться на главный экран">
                 Скажи Санте
               </button>
               <button onclick="toggleUserRoleQuick()" id="roleHeaderBadge" title="Переключить режим" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition cursor-pointer flex items-center gap-1 shrink-0">
@@ -1150,7 +1236,7 @@
                 <i class="fa-solid fa-sun text-amber-500 text-sm"></i>
                 <div>
                   <div class="text-xs font-extrabold text-slate-900">Светлая</div>
-                  <div class="text-[10px] text-slate-400">Revolut Light</div>
+                  <div class="text-[10px] text-slate-400">Классическая светлая</div>
                 </div>
               </div>
               <i id="themeCheckLight" class="fa-solid fa-circle-check text-[#009FE3] text-xs"></i>
@@ -1161,7 +1247,7 @@
                 <i class="fa-solid fa-moon text-indigo-400 text-sm"></i>
                 <div>
                   <div class="text-xs font-extrabold text-slate-900">Тёмная</div>
-                  <div class="text-[10px] text-slate-400">Revolut Dark</div>
+                  <div class="text-[10px] text-slate-400">Комфортная тёмная</div>
                 </div>
               </div>
               <i id="themeCheckDark" class="fa-regular fa-circle text-slate-400 text-xs"></i>
@@ -8308,6 +8394,8 @@ function selectBrand(brandKey) {
   if (headerLogoImg) headerLogoImg.src = logoUrl;
   const activeLogoImg = document.getElementById('activeBrandLogoImg');
   if (activeLogoImg) activeLogoImg.src = logoUrl;
+  const homeIcon = document.getElementById('headerHomeIcon');
+  if (homeIcon) homeIcon.style.color = cfg.headerBg;
 
   Object.keys(window.BRAND_CONFIG).forEach(key => {
     const btn = document.getElementById(`brandBtn-${key}`);
@@ -8368,6 +8456,8 @@ function backToBrandsHub(silentReset) {
   const headerLogoImg = document.getElementById('headerBrandLogoImg');
   const defaultSantaLogo = (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS.santa) || 'assets/logos/santa_retail.png';
   if (headerLogoImg) headerLogoImg.src = defaultSantaLogo;
+  const homeIcon = document.getElementById('headerHomeIcon');
+  if (homeIcon) homeIcon.style.color = '#009FE3';
 
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
   if (backHomeBtn && window.state.activeTab === 'home') {
@@ -8380,6 +8470,12 @@ function backToBrandsHub(silentReset) {
     vp.scrollTop = 0;
   }
 };
+
+function navigateHomeFull() {
+  switchMainTab('home');
+  backToBrandsHub();
+}
+window.navigateHomeFull = navigateHomeFull;
 
 window.clearChecklistSearch = function () {
   document.getElementById('checklistSearchInput').value = '';
@@ -10602,6 +10698,7 @@ window.saveState = saveState;
 window.openBrandClaimsPage = openBrandClaimsPage;
 window.openExpressReportModal = openExpressReportModal;
 window.submitExpressReport = submitExpressReport;
+window.navigateHomeFull = navigateHomeFull;
 </script>
 </body>
 </html>

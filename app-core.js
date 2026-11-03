@@ -1286,6 +1286,8 @@ function selectBrand(brandKey) {
   if (headerLogoImg) headerLogoImg.src = logoUrl;
   const activeLogoImg = document.getElementById('activeBrandLogoImg');
   if (activeLogoImg) activeLogoImg.src = logoUrl;
+  const homeIcon = document.getElementById('headerHomeIcon');
+  if (homeIcon) homeIcon.style.color = cfg.headerBg;
 
   Object.keys(window.BRAND_CONFIG).forEach(key => {
     const btn = document.getElementById(`brandBtn-${key}`);
@@ -1346,6 +1348,8 @@ function backToBrandsHub(silentReset) {
   const headerLogoImg = document.getElementById('headerBrandLogoImg');
   const defaultSantaLogo = (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS.santa) || 'assets/logos/santa_retail.png';
   if (headerLogoImg) headerLogoImg.src = defaultSantaLogo;
+  const homeIcon = document.getElementById('headerHomeIcon');
+  if (homeIcon) homeIcon.style.color = '#009FE3';
 
   const backHomeBtn = document.getElementById('headerBackHomeBtn');
   if (backHomeBtn && window.state.activeTab === 'home') {
@@ -1358,6 +1362,12 @@ function backToBrandsHub(silentReset) {
     vp.scrollTop = 0;
   }
 };
+
+function navigateHomeFull() {
+  switchMainTab('home');
+  backToBrandsHub();
+}
+window.navigateHomeFull = navigateHomeFull;
 
 window.clearChecklistSearch = function () {
   document.getElementById('checklistSearchInput').value = '';
@@ -3580,3 +3590,4 @@ window.saveState = saveState;
 window.openBrandClaimsPage = openBrandClaimsPage;
 window.openExpressReportModal = openExpressReportModal;
 window.submitExpressReport = submitExpressReport;
+window.navigateHomeFull = navigateHomeFull;
