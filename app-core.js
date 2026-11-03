@@ -946,7 +946,7 @@ function updateAllUI() {
   document.getElementById('roleHeaderBadge').innerHTML = `<span>${roleVal}</span><i class="fa-solid fa-repeat text-[8px] opacity-80"></i>`;
   document.getElementById('headerUserSubtitle').textContent = window.state.userName
     ? `${window.state.userName} • ${window.state.userDivision}`
-    : 'Народный контроль качества';
+    : 'Мониторинг качества сети «Санта»';
   document.getElementById('headerRankText').textContent = ptsVal < 0
     ? 'В минусе (штраф)'
     : ptsVal === 0
@@ -3188,6 +3188,7 @@ window.submitAuthLogin = function () {
 
   window.isSessionAuthenticated = true;
   window.isEditingProfileMode = false;
+  try { localStorage.setItem('santa_session_logged_in', 'true'); } catch (e) {}
   clearOnbPasswordError();
   document.getElementById('onboardingModal').classList.add('hidden');
   updateAllUI();
@@ -3255,6 +3256,7 @@ window.triggerFaceIdAuth = async function (mode) {
       if (mode === 'login') {
         window.isSessionAuthenticated = true;
         window.isEditingProfileMode = false;
+        try { localStorage.setItem('santa_session_logged_in', 'true'); } catch (e) {}
         clearOnbPasswordError();
         document.getElementById('onboardingModal').classList.add('hidden');
         updateAllUI();
@@ -3267,6 +3269,7 @@ window.triggerFaceIdAuth = async function (mode) {
 };
 
 window.closeOnboardingModal = function (forceGuest = false) {
+  try { localStorage.setItem('santa_session_logged_in', 'true'); } catch (e) {}
   if (!window.isSessionAuthenticated) {
     if (!window.state.userProfile || !window.state.userProfile.name) {
       window.state.userProfile = {
@@ -3280,6 +3283,9 @@ window.closeOnboardingModal = function (forceGuest = false) {
     window.isSessionAuthenticated = true;
   }
   window.smoothCloseModal('onboardingModal');
+  if (forceGuest) {
+    showToast('Демо-режим активирован', 'Вы вошли как гость сети «Санта»', 'info');
+  }
 };
 
 window.selectOnboardingRole = function (role) {
@@ -3357,6 +3363,7 @@ window.saveOnboardingProfile = function (viaFaceId) {
   window.state.onboarded = true;
   window.isSessionAuthenticated = true;
   window.isEditingProfileMode = false;
+  try { localStorage.setItem('santa_session_logged_in', 'true'); } catch (e) {}
 
   clearOnbPasswordError();
   saveState();
@@ -3527,17 +3534,41 @@ window.toggleAppTitleName = function () {
   playSplashScreen();
 };
 
+window.logoutUser = function () {
+  try {
+    localStorage.removeItem('santa_session_logged_in');
+    sessionStorage.removeItem('santa_session_logged_in');
+  } catch (e) {}
+  window.isSessionAuthenticated = false;
+  window.smoothCloseModal('settingsModal');
+  setTimeout(() => {
+    openOnboardingModal(false);
+  }, 250);
+  showToast('Вы вышли из профиля', 'Введите пароль или войдите под другим аккаунтом', 'info');
+};
+
 window.addEventListener('DOMContentLoaded', function () {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
-  window.isSessionAuthenticated = false;
+  let isAuthed = false;
+  try {
+    isAuthed = localStorage.getItem('santa_session_logged_in') === 'true';
+  } catch (e) {
+    isAuthed = false;
+  }
+  window.isSessionAuthenticated = isAuthed;
   updateAllUI();
   selectBrand(window.state.activeBrand || 'santa');
   backToBrandsHub(true);
   playSplashScreen();
-  // Пользователь сразу попадает на главный экран
-  window.isSessionAuthenticated = true;
+
+  if (!isAuthed) {
+    setTimeout(() => {
+      openOnboardingModal(false);
+    }, 1100);
+  }
+
   startCountdownTimer();
   initCloudRealtimeSync();
   pollServerState();
@@ -3574,3 +3605,4 @@ window.openBrandClaimsPage = openBrandClaimsPage;
 window.openExpressReportModal = openExpressReportModal;
 window.submitExpressReport = submitExpressReport;
 window.navigateHomeFull = navigateHomeFull;
+window.logoutUser = logoutUser;

@@ -430,9 +430,9 @@
           <div class="text-[10px] font-black uppercase tracking-[0.28em] text-[#213567]/60 mt-1.5">Х О Л Д И Н Г</div>
         </div>
 
-        <h1 id="splashAppTitle" class="text-3xl font-black tracking-tight">Скажи Санте</h1>
+        <h1 id="splashAppTitle" class="text-3xl font-black tracking-tight">Санта.Радар</h1>
         <p class="text-sm text-white/85 font-medium mt-1.5 max-w-[260px]">
-          Единый народный контроль качества и забота о стандартах
+          Мониторинг качества и стандартов торговой сети
         </p>
 
         <!-- Fast Smooth Loading Progress Bar -->
@@ -497,7 +497,7 @@
           <div class="min-w-0 flex-1 overflow-hidden">
             <div class="flex items-center gap-1.5 min-w-0">
               <button onclick="navigateHomeFull()" id="headerAppTitleText" class="font-black text-sm tracking-tight leading-none hover:opacity-90 transition truncate" title="Вернуться на главный экран">
-                Скажи Санте
+                Санта.Радар
               </button>
               <button onclick="toggleUserRoleQuick()" id="roleHeaderBadge" title="Переключить режим" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition cursor-pointer flex items-center gap-1 shrink-0">
                 <span>Наблюдатель</span>
@@ -505,7 +505,7 @@
               </button>
             </div>
             <div class="text-[10px] text-white/80 font-medium truncate mt-0.5" id="headerUserSubtitle">
-              Народный контроль качества
+              Мониторинг качества сети «Санта»
             </div>
           </div>
         </div>
@@ -715,9 +715,9 @@
                 <div class="overflow-hidden min-w-0 flex-1">
                   <div class="flex items-center gap-1.5">
                     <span class="font-black text-sm tracking-tight text-slate-900 truncate">Санта Бремор</span>
-                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">Рыба & море</span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">Рыба, мороженое, Бабушка Аня</span>
                   </div>
-                  <div class="text-[11px] text-slate-500 font-medium truncate mt-0.5">Рыба, икра, морепродукты, Матиас, ЮККИ</div>
+                  <div class="text-[11px] text-slate-500 font-medium truncate mt-0.5">Рыба «Матиас», мороженое «ЮККИ» и «ТОП», пельмени «Бабушка Аня»</div>
                 </div>
               </div>
               <div class="w-8 h-8 rounded-full bg-slate-50 group-hover:bg-indigo-50 flex items-center justify-center shrink-0 transition-colors">
@@ -734,9 +734,9 @@
                 <div class="overflow-hidden min-w-0 flex-1">
                   <div class="flex items-center gap-1.5">
                     <span class="font-black text-sm tracking-tight text-slate-900 truncate">Савушкин</span>
-                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Молоко</span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Молочные продукты</span>
                   </div>
-                  <div class="text-[11px] text-slate-500 font-medium truncate mt-0.5">Молоко, сыры Брест-Литовск, Teos, йогурты</div>
+                  <div class="text-[11px] text-slate-500 font-medium truncate mt-0.5">Молочные продукты, сыры «Брест-Литовск», Teos, йогурты</div>
                 </div>
               </div>
               <div class="w-8 h-8 rounded-full bg-slate-50 group-hover:bg-emerald-50 flex items-center justify-center shrink-0 transition-colors">
@@ -1462,9 +1462,9 @@
         <div class="bg-white rounded-[24px] p-4 shadow-[0_4px_20px_rgba(15,23,42,0.04)] space-y-2">
           <div class="text-xs font-extrabold text-slate-900 mb-1">Управление профилем и данными</div>
 
-          <button type="button" onclick="lockAppSession()" class="w-full py-2.5 px-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs flex items-center justify-between transition">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-lock text-sky-400"></i><span>Выйти / Проверить вход по паролю и Face ID</span></span>
-            <i class="fa-solid fa-right-from-bracket text-xs text-slate-400"></i>
+          <button type="button" onclick="logoutUser()" class="w-full py-2.5 px-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs flex items-center justify-between transition">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-arrow-right-from-bracket text-sky-400"></i><span>Выйти из аккаунта / Сменить пользователя</span></span>
+            <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
           </button>
 
           <button type="button" onclick="openOnboardingModal(true)" class="w-full py-2.5 px-3.5 rounded-2xl bg-[#F4F5F7] hover:opacity-90 text-slate-800 font-bold text-xs flex items-center justify-between transition">
@@ -1842,8 +1842,8 @@
               <i class="fa-solid fa-user-check"></i>
             </div>
             <div class="min-w-0">
-              <h2 id="onbModalTitleText" class="text-sm font-extrabold text-slate-900 leading-tight truncate">Профиль сотрудника</h2>
-              <p id="onbModalSubtitleText" class="text-[11px] text-slate-400 font-medium">Быстрый вход • 0 баллов</p>
+              <h2 id="onbModalTitleText" class="text-sm font-extrabold text-slate-900 leading-tight truncate">Вход в Санта.Радар</h2>
+              <p id="onbModalSubtitleText" class="text-[11px] text-slate-400 font-medium">Служба контроля качества сети «Санта»</p>
             </div>
           </div>
 
@@ -2158,6 +2158,15 @@
 
           <button type="button" id="saveOnboardingBtn" onclick="saveOnboardingProfile()" class="w-full py-3 rounded-2xl bg-[#009FE3] hover:opacity-95 text-white font-extrabold text-xs uppercase tracking-wider shadow-md transition active:scale-95 cursor-pointer">
             Зарегистрироваться и войти
+          </button>
+
+          <button
+            type="button"
+            onclick="closeOnboardingModal(true)"
+            class="w-full py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs flex items-center justify-center gap-2 transition active:scale-95"
+          >
+            <i class="fa-solid fa-arrow-right-to-bracket text-slate-500"></i>
+            <span>Продолжить как гость (демо-режим)</span>
           </button>
 
           
@@ -3476,14 +3485,14 @@ window.BRAND_CONFIG = {
   bremor: {
     id: 'bremor',
     name: 'Санта Бремор',
-    shortDesc: 'Рыба, икра, морепродукты',
+    shortDesc: 'Рыба, мороженое, «Бабушка Аня»',
     badge: 'Во всех сетях РБ',
     headerBg: '#003865',
     icon: 'fa-fish-fins',
     logoUrl: (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS.bremor) || 'assets/logos/bremor.png',
     logoAlt: 'Санта Бремор',
     bannerClass: 'bg-[#003865]/10 border-[#003865]/30 text-slate-900',
-    subtitle: 'Полный контроль продукции «Санта Бремор» в любых магазинах и сельмагах РБ: сельдь «Матиас», красная рыба, крабовые палочки, икорные пасты, креветки, мороженое «ЮККИ/ТОП» и пельмени «Бабушка Аня».',
+    subtitle: 'Контроль продукции «Санта Бремор» во всех магазинах: рыба «Матиас» и семга, икра, крабовые палочки, мороженое «ЮККИ», «ТОП», «Soletto» и полуфабрикаты «Бабушка Аня» (пельмени, блинчики, вареники).',
     categories: [
       {
         title: '1. Сельдь и пресервы («Матиас», «Исландка», морская капуста)',
@@ -3558,7 +3567,7 @@ window.BRAND_CONFIG = {
   savushkin: {
     id: 'savushkin',
     name: 'Савушкин',
-    shortDesc: 'Молоко, сыры, йогурты',
+    shortDesc: 'Молочные продукты, сыры, йогурты',
     badge: 'Во всех сетях РБ',
     headerBg: '#008A3C',
     icon: 'fa-cow',
@@ -3568,15 +3577,15 @@ window.BRAND_CONFIG = {
     subtitle: 'Контроль свежести и упаковки брендов «Савушкин», «Брест-Литовск», «Teos», «High Protein», «Оптималь», «101 зерно», «Топ» и «Свежа» во всех магазинах и деревнях РБ.',
     categories: [
       {
-        title: '1. Молоко, кефир, сметана и сливки («Савушкин», «Брест-Литовск»)',
+        title: '1. Молочные продукты: кефир, сметана, творог и сливки («Савушкин», «Брест-Литовск»)',
         icon: 'fa-bottle-droplet',
         items: [
-          { id: 'sv_q1', label: 'Просроченное молоко, кефир или сметана «Савушкин» / «Брест-Литовск» на полке', points: 2, critical: true, hint: 'КРИТИЧЕСКИЙ СИГНАЛ (+2 балла): Крупно сфотографируйте дату годности и ценник магазина.', voiceSample: 'На полке магазина обнаружена сметана Савушкин с истекшим вчера сроком годности.' },
-          { id: 'sv_m1', label: 'Скисшее молоко/сливки до истечения срока годности (хлопья, кислый запах)', points: 2, critical: true, hint: 'КРИТИЧЕСКИЙ СИГНАЛ (+2 балла): Сфотографируйте номер партии и дату выработки на крышке/пачке.', voiceSample: 'Молоко Савушкин с хорошим сроком годности свернулось при добавлении в кофе.' },
-          { id: 'sv_q3', label: 'Протечка молока/кефира в лотке: липкие бутылки и грязная полка', points: 1, critical: false, hint: 'Сфотографируйте потекшую упаковку или грязный картонный трей.', voiceSample: 'В картонном лотке с кефиром протекла одна пачка, испачканы все соседние бутылки.' },
+          { id: 'sv_q1', label: 'Просроченная молочная продукция: кефир, творог или сметана «Савушкин» / «Брест-Литовск» на полке', points: 2, critical: true, hint: 'КРИТИЧЕСКИЙ СИГНАЛ (+2 балла): Крупно сфотографируйте дату годности и ценник магазина.', voiceSample: 'На полке магазина обнаружена сметана Савушкин с истекшим вчера сроком годности.' },
+          { id: 'sv_m1', label: 'Скисшая молочная продукция/сливки до истечения срока годности (хлопья, кислый запах)', points: 2, critical: true, hint: 'КРИТИЧЕСКИЙ СИГНАЛ (+2 балла): Сфотографируйте номер партии и дату выработки на крышке/пачке.', voiceSample: 'Молочная продукция Савушкин с хорошим сроком годности свернулась при добавлении в кофе.' },
+          { id: 'sv_q3', label: 'Протечка упаковки в лотке: липкие бутылки и грязная полка', points: 1, critical: false, hint: 'Сфотографируйте потекшую упаковку или грязный картонный трей.', voiceSample: 'В картонном лотке с кефиром протекла одна пачка, испачканы все соседние бутылки.' },
           { id: 'sv_m2', label: 'Вздутая крышка (платинка) на стакане сметаны или отслоение сыворотки', points: 1, critical: false, hint: 'Сфотографируйте вздутый стакан сметаны и дату производства.', voiceSample: 'У двух стаканов сметаны Брест-Литовск вздулась верхняя фольгированная мембрана.' },
-          { id: 'sv_m3', label: 'Смятый картонный пакет молока/сливок или сорванная резьба крышки', points: 1, critical: false, hint: 'Сфотографируйте деформированную пачку на витрине.', voiceSample: 'На первой линии стоят сильно помятые пакеты молока.' },
-          { id: 'sv_m4', label: 'Другое (Молоко, кефир, ряженка, сметана)', points: 1, critical: false, isOther: true, hint: 'Сфотографируйте продукт и опишите замечание.', voiceSample: 'На крышке бутылки кефира смазана дата производства.' }
+          { id: 'sv_m3', label: 'Смятый картонный пакет или сорванная резьба крышки упаковки', points: 1, critical: false, hint: 'Сфотографируйте деформированную пачку на витрине.', voiceSample: 'На первой линии стоят сильно помятые пакеты молока.' },
+          { id: 'sv_m4', label: 'Другое (Молочные продукты, кефир, ряженка, сметана)', points: 1, critical: false, isOther: true, hint: 'Сфотографируйте продукт и опишите замечание.', voiceSample: 'На крышке бутылки кефира смазана дата производства.' }
         ]
       },
       {
@@ -3864,17 +3873,17 @@ window.CLEAN_DEFAULT_MISSIONS = [
     difficulty: 'hard',
     diffLabel: '🔴 Сложная миссия',
     diffBadgeClass: 'bg-rose-100 text-rose-900 border-rose-200',
-    brand: 'Санта Отели / Санта Рест',
-    store: 'Отель «Эрмитаж» / Ресторан «Жюль Верн» / Кафе / Пиццерия',
+    brand: 'Санта Ритейл',
+    store: 'Супермаркет сети «Санта» (флагманский или районный магазин)',
     duration: '12–15 мин',
-    title: 'Эксклюзив «Тайный гость»: Полный аудит сервиса, чистоты, тайминга подачи и ресепшн',
-    description: 'Глубокая проверка стандартов гостеприимства Холдинга. Оцениваем все этапы контакта с гостем: от приветствия и опрятности формы персонала до скорости подачи блюд/оформления и идеальной чистоты зала и гостевых санузлов.',
-    photoGuide: 'Фото сервировки стола/блюда, состояния меню и графика уборки санузла.',
+    title: '«Тайный покупатель»: Полный аудит торгового зала, витрин, ценников и свежести',
+    description: 'Глубокая проверка стандартов магазина сети «Санта». Оцениваем состояние торгового зала: от входной группы и чистоты корзин до ротации полок, читаемости ценников, свежести кулинарии и скорости обслуживания на кассах.',
+    photoGuide: 'Фото торговых полок, ценников, чистоты холодильных витрин и выкладки в магазине.',
     tasks: [
-      'Оценить встречу на входе / стойке ресепшн: приветствие, улыбка, наличие бейджа и опрятность униформы',
-      'Засечь время подачи меню (до 2 мин) и напитка/блюда, проверить температуру подачи и соответствие выходу',
-      'Проверить чистоту стола, приборов, спецовников и отсутствие сколов на посуде',
-      'Проверить гостевой санузел: наличие мыла, бумажных полотенец, отсутствие запахов и актуальность подписи в графике уборки'
+      'Оценить входную группу: чистота покупательских корзин/тележек, отсутствие мусора и работа входной зоны',
+      'Проверить соответствие ценников товарам и наличие желтых акционных ценников на промо-товары',
+      'Проверить температурный режим холодильных горок и бонет заморозки (рыба, полуфабрикаты «Бабушка Аня», мороженое)',
+      'Оценить свежесть в зоне овощей/фруктов, отдела кулинарии и пекарни, зафиксировать фото стеллажей магазина'
     ],
     points: 4,
     status: 'available'
@@ -3891,7 +3900,7 @@ window.CLEAN_DEFAULT_MISSIONS = [
     description: 'Специальная миссия для районных городов, городских поселков, агрогородков и деревень Беларуси. В удаленных точках особенно важно контролировать соблюдение температурного режима, отсутствие просрочки и наличие базового ассортимента холдинга.',
     photoGuide: 'Панорамное фото/видео холодильных витрин магазина и крупный план дат изготовления 3–4 товаров.',
     tasks: [
-      'Проверить представленность ключевых позиций «Савушкин» (молоко, сметана, творог, сыр) и «Санта Бремор» (сельдь, пасты, крабовые палочки)',
+      'Проверить представленность ключевых позиций «Савушкин» (молочные продукты, сметана, творог, сыр) и «Санта Бремор» (сельдь, пасты, крабовые палочки, мороженое, «Бабушка Аня»)',
       'Выборочно проверить даты изготовления и окончания срока годности минимум у 5 позиций на крайних рядах полки',
       'Проверить работу холодильного оборудования (нет ли отключенных на ночь витрин, конденсата или теплого воздуха)',
       'Сверить наличие желтых/акционных ценников и отсутствие товаров из Красного стоп-листа'
@@ -8220,7 +8229,7 @@ function updateAllUI() {
   document.getElementById('roleHeaderBadge').innerHTML = `<span>${roleVal}</span><i class="fa-solid fa-repeat text-[8px] opacity-80"></i>`;
   document.getElementById('headerUserSubtitle').textContent = window.state.userName
     ? `${window.state.userName} • ${window.state.userDivision}`
-    : 'Народный контроль качества';
+    : 'Мониторинг качества сети «Санта»';
   document.getElementById('headerRankText').textContent = ptsVal < 0
     ? 'В минусе (штраф)'
     : ptsVal === 0
@@ -10462,6 +10471,7 @@ window.submitAuthLogin = function () {
 
   window.isSessionAuthenticated = true;
   window.isEditingProfileMode = false;
+  try { localStorage.setItem('santa_session_logged_in', 'true'); } catch (e) {}
   clearOnbPasswordError();
   document.getElementById('onboardingModal').classList.add('hidden');
   updateAllUI();
@@ -10529,6 +10539,7 @@ window.triggerFaceIdAuth = async function (mode) {
       if (mode === 'login') {
         window.isSessionAuthenticated = true;
         window.isEditingProfileMode = false;
+        try { localStorage.setItem('santa_session_logged_in', 'true'); } catch (e) {}
         clearOnbPasswordError();
         document.getElementById('onboardingModal').classList.add('hidden');
         updateAllUI();
@@ -10541,6 +10552,7 @@ window.triggerFaceIdAuth = async function (mode) {
 };
 
 window.closeOnboardingModal = function (forceGuest = false) {
+  try { localStorage.setItem('santa_session_logged_in', 'true'); } catch (e) {}
   if (!window.isSessionAuthenticated) {
     if (!window.state.userProfile || !window.state.userProfile.name) {
       window.state.userProfile = {
@@ -10554,6 +10566,9 @@ window.closeOnboardingModal = function (forceGuest = false) {
     window.isSessionAuthenticated = true;
   }
   window.smoothCloseModal('onboardingModal');
+  if (forceGuest) {
+    showToast('Демо-режим активирован', 'Вы вошли как гость сети «Санта»', 'info');
+  }
 };
 
 window.selectOnboardingRole = function (role) {
@@ -10631,6 +10646,7 @@ window.saveOnboardingProfile = function (viaFaceId) {
   window.state.onboarded = true;
   window.isSessionAuthenticated = true;
   window.isEditingProfileMode = false;
+  try { localStorage.setItem('santa_session_logged_in', 'true'); } catch (e) {}
 
   clearOnbPasswordError();
   saveState();
@@ -10801,17 +10817,41 @@ window.toggleAppTitleName = function () {
   playSplashScreen();
 };
 
+window.logoutUser = function () {
+  try {
+    localStorage.removeItem('santa_session_logged_in');
+    sessionStorage.removeItem('santa_session_logged_in');
+  } catch (e) {}
+  window.isSessionAuthenticated = false;
+  window.smoothCloseModal('settingsModal');
+  setTimeout(() => {
+    openOnboardingModal(false);
+  }, 250);
+  showToast('Вы вышли из профиля', 'Введите пароль или войдите под другим аккаунтом', 'info');
+};
+
 window.addEventListener('DOMContentLoaded', function () {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
-  window.isSessionAuthenticated = false;
+  let isAuthed = false;
+  try {
+    isAuthed = localStorage.getItem('santa_session_logged_in') === 'true';
+  } catch (e) {
+    isAuthed = false;
+  }
+  window.isSessionAuthenticated = isAuthed;
   updateAllUI();
   selectBrand(window.state.activeBrand || 'santa');
   backToBrandsHub(true);
   playSplashScreen();
-  // Пользователь сразу попадает на главный экран
-  window.isSessionAuthenticated = true;
+
+  if (!isAuthed) {
+    setTimeout(() => {
+      openOnboardingModal(false);
+    }, 1100);
+  }
+
   startCountdownTimer();
   initCloudRealtimeSync();
   pollServerState();
@@ -10848,6 +10888,7 @@ window.openBrandClaimsPage = openBrandClaimsPage;
 window.openExpressReportModal = openExpressReportModal;
 window.submitExpressReport = submitExpressReport;
 window.navigateHomeFull = navigateHomeFull;
+window.logoutUser = logoutUser;
 </script>
 </body>
 </html>
