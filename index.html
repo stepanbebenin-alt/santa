@@ -668,28 +668,6 @@
             </div>
           </div>
 
-          <!-- Daily Progress & Motivation Micro-Widget -->
-          <div class="bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-blue-500/10 border border-emerald-500/20 p-3 rounded-[24px] flex items-center justify-between gap-3 shadow-xs">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="w-9 h-9 rounded-2xl bg-white shadow-xs text-amber-500 flex items-center justify-center shrink-0 text-sm">
-                <i class="fa-solid fa-fire"></i>
-              </div>
-              <div class="min-w-0">
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-black text-slate-900 truncate">Цель дня: 3 витрины</span>
-                  <span id="dailyProgressPill" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 shrink-0">0 / 3</span>
-                </div>
-                <div class="w-36 sm:w-48 bg-slate-200/80 rounded-full h-1.5 mt-1.5 overflow-hidden">
-                  <div id="dailyProgressBar" class="bg-gradient-to-r from-emerald-500 to-[#009FE3] h-full rounded-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
-            <div class="text-right shrink-0">
-              <div class="text-[9px] font-bold text-slate-400">Бонус дня</div>
-              <div class="text-xs font-black text-emerald-600">+10 б.</div>
-            </div>
-          </div>
-
           <!-- GLOBAL LIVE SEARCH ACROSS ALL 5 BRANDS -->
           <div class="relative">
             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -4594,48 +4572,6 @@ function startLiveCameraAnalysis() {
       const skinRatio = skinCount / count;
       const centerSkinRatio = centerSkinCount / (25 * 29);
 
-      // Строгая биометрическая проверка лица: требует пары симметричных глаз И рта (деревянные столы и коробки исключены)
-      let isFace = false;
-      if (skinRatio <= 0.78 && skinRatio >= 0.08 && centerSkinRatio >= 0.18) {
-        const eyeCandidates = [];
-        for (let y = 10; y <= 30; y += 2) {
-          for (let x = 8; x <= 40; x++) {
-            const idx = y * 48 + x;
-            if (lumArr[idx] < 85 && skinArr[idx - 1] && skinArr[idx + 1]) {
-              eyeCandidates.push({ x, y });
-            }
-          }
-        }
-        let eyePair = null;
-        for (let i = 0; i < eyeCandidates.length; i++) {
-          for (let j = i + 1; j < eyeCandidates.length; j++) {
-            const e1 = eyeCandidates[i];
-            const e2 = eyeCandidates[j];
-            const dx = Math.abs(e1.x - e2.x);
-            const dy = Math.abs(e1.y - e2.y);
-            if (dy <= 3 && dx >= 5 && dx <= 22) {
-              eyePair = { dx, midX: (e1.x + e2.x) / 2, midY: (e1.y + e2.y) / 2 };
-              break;
-            }
-          }
-          if (eyePair) break;
-        }
-        if (eyePair) {
-          const mouthMinY = Math.round(eyePair.midY + eyePair.dx * 0.55);
-          const mouthMaxY = Math.round(eyePair.midY + eyePair.dx * 1.8);
-          for (let y = mouthMinY; y <= Math.min(46, mouthMaxY); y++) {
-            for (let x = Math.round(eyePair.midX - 4); x <= Math.round(eyePair.midX + 4); x++) {
-              const idx = y * 48 + x;
-              if (lumArr[idx] < 125 && skinArr[idx]) {
-                isFace = true;
-                break;
-              }
-            }
-            if (isFace) break;
-          }
-        }
-      }
-
       let lumVar = 0;
       for (let p = 0; p < count; p++) {
         const diff = lumArr[p] - avgLum;
@@ -4643,87 +4579,157 @@ function startLiveCameraAnalysis() {
       }
       const stdDev = Math.sqrt(lumVar / count);
 
+      // 1. Подсчет градиентов, горизонтальных рейлов полок и перепадов
       let gradSum = 0;
       let edges = 0;
       let maxHRun = 0;
       let bestRailY = -1;
 
-      // Если в кадре лицо — блокируем поиск полок и ценников
-      if (!isFace) {
-        for (let y = 2; y < 46; y++) {
-          let curHRun = 0;
-          for (let x = 2; x < 46; x++) {
-            const idx = y * 48 + x;
-            const lum = lumArr[idx];
-            const lumRight = lumArr[idx + 1];
-            const lumBottom = lumArr[idx + 48];
-            const dx = Math.abs(lumRight - lum);
-            const dy = Math.abs(lumBottom - lum);
-            const g = dx + dy;
+      for (let y = 2; y < 46; y++) {
+        let curHRun = 0;
+        for (let x = 2; x < 46; x++) {
+          const idx = y * 48 + x;
+          const lum = lumArr[idx];
+          const lumRight = lumArr[idx + 1];
+          const lumBottom = lumArr[idx + 48];
+          const dx = Math.abs(lumRight - lum);
+          const dy = Math.abs(lumBottom - lum);
+          const g = dx + dy;
 
-            if (g > 18) {
-              gradSum += g;
-              edges++;
+          if (g > 18) {
+            gradSum += g;
+            edges++;
+          }
+          if (dy > 16 && dy >= dx * 1.2) {
+            curHRun++;
+            if (curHRun > maxHRun) {
+              maxHRun = curHRun;
+              bestRailY = y;
             }
-            if (dy > 18 && dy >= dx * 1.3 && !skinArr[idx]) {
-              curHRun++;
-              if (curHRun > maxHRun) {
-                maxHRun = curHRun;
-                bestRailY = y;
-              }
-            } else {
-              curHRun = 0;
-            }
+          } else {
+            curHRun = 0;
           }
         }
       }
 
-      // Проверка вертикальных упаковок над планкой стеллажа (минимум 3 колонки выкладки товара)
+      // 2. Проверка вертикальных упаковок над планкой стеллажа (фейсинги товаров)
       let hasVerticalAboveRail = false;
-      if (!isFace && bestRailY >= 14 && maxHRun >= 20) {
-        let vCols = 0;
+      let vCols = 0;
+      if (bestRailY >= 12 && maxHRun >= 12) {
         let lastX = -5;
-        for (let x = 6; x < 42; x++) {
+        for (let x = 4; x < 44; x++) {
           let colV = 0;
-          for (let y = bestRailY - 12; y < bestRailY - 2; y++) {
+          for (let y = Math.max(2, bestRailY - 14); y < bestRailY - 1; y++) {
             const idx = y * 48 + x;
             const dx = Math.abs(lumArr[idx + 1] - lumArr[idx]);
             const dy = Math.abs(lumArr[idx + 48] - lumArr[idx]);
-            if (dx > 16 && dx >= dy && !skinArr[idx]) colV++;
+            if (dx > 15 && dx >= dy * 0.9) colV++;
           }
           if (colV >= 4 && (x - lastX) >= 3) {
             vCols++;
             lastX = x;
           }
         }
-        if (vCols >= 3) hasVerticalAboveRail = true;
+        if (vCols >= 2) hasVerticalAboveRail = true;
       }
 
-      // Проверка зоны ценника (окно 12x8, без кожи)
+      // 3. Проверка зоны ценника (прямоугольная контрастная плашка 12x8)
       let hasPriceTagPatch = false;
-      if (!isFace) {
-        for (let wy = 8; wy <= 32; wy += 6) {
-          for (let wx = 8; wx <= 30; wx += 6) {
-            let winMin = 255, winMax = 0, winSum = 0, winE = 0, skinInPatch = 0;
-            for (let y = wy; y < wy + 8; y++) {
-              for (let x = wx; x < wx + 12; x++) {
-                const idx = y * 48 + x;
-                const l = lumArr[idx];
-                winSum += l;
-                if (l < winMin) winMin = l;
-                if (l > winMax) winMax = l;
-                if (skinArr[idx]) skinInPatch++;
-                const g = Math.abs(lumArr[idx + 1] - l) + Math.abs(lumArr[idx + 48] - l);
-                if (g > 20) winE++;
-              }
+      for (let wy = 6; wy <= 34; wy += 5) {
+        for (let wx = 6; wx <= 32; wx += 5) {
+          let winMin = 255, winMax = 0, winSum = 0, winE = 0;
+          for (let y = wy; y < wy + 8; y++) {
+            for (let x = wx; x < wx + 12; x++) {
+              const idx = y * 48 + x;
+              const l = lumArr[idx];
+              winSum += l;
+              if (l < winMin) winMin = l;
+              if (l > winMax) winMax = l;
+              const g = Math.abs(lumArr[idx + 1] - l) + Math.abs(lumArr[idx + 48] - l);
+              if (g > 18) winE++;
             }
-            const winAvg = winSum / 96;
-            if (winMax - winMin >= 95 && winAvg >= 105 && winE >= 18 && winE <= 60 && skinInPatch < 3) {
-              hasPriceTagPatch = true;
+          }
+          const winAvg = winSum / 96;
+          if (winMax - winMin >= 80 && winAvg >= 85 && winE >= 14 && winE <= 65) {
+            hasPriceTagPatch = true;
+            break;
+          }
+        }
+        if (hasPriceTagPatch) break;
+      }
+
+      // 4. Проверка штрихкода (частые вертикальные чередования полос)
+      let hasBarcodePatch = false;
+      for (let wy = 8; wy <= 36; wy += 8) {
+        for (let wx = 8; wx <= 30; wx += 6) {
+          let vStripeTransitions = 0;
+          for (let x = wx; x < wx + 16; x++) {
+            const l1 = lumArr[wy * 48 + x];
+            const l2 = lumArr[wy * 48 + x + 1];
+            if (Math.abs(l2 - l1) > 45) vStripeTransitions++;
+          }
+          if (vStripeTransitions >= 7) {
+            hasBarcodePatch = true;
+            break;
+          }
+        }
+        if (hasBarcodePatch) break;
+      }
+
+      // 5. Проверка продуктовых зон (холодильник, фреш-зона, пекарня/выпечка)
+      let coolerPixels = 0;
+      let freshPixels = 0;
+      let bakeryPixels = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        if (b > r + 15 && b > g - 10 && (r + g + b) > 170) coolerPixels++;
+        if (g > r + 12 && g > b + 15) freshPixels++;
+        if (r > 160 && g > 60 && g < 140 && b < 70) freshPixels++;
+        if (r >= 130 && r <= 230 && g >= 75 && g <= 150 && b >= 20 && b <= 80) bakeryPixels++;
+      }
+      const hasCoolerSignature = coolerPixels / count >= 0.08;
+      const hasFreshSignature = freshPixels / count >= 0.07;
+      const hasBakerySignature = bakeryPixels / count >= 0.09;
+      const hasAisleSignature = (edges / count >= 0.08 && stdDev >= 18 && !hasPriceTagPatch && !hasVerticalAboveRail && maxHRun < 12);
+
+      // 6. СТРОГАЯ ДЕТЕКЦИЯ ЛИЦА (Исключает хлеб, сыр, коробки, полки и ценники!)
+      let isFace = false;
+      const hasAnyRetailSignature = maxHRun >= 12 || hasPriceTagPatch || hasBarcodePatch || hasVerticalAboveRail || hasCoolerSignature || hasFreshSignature || hasBakerySignature;
+
+      if (!hasAnyRetailSignature && skinRatio >= 0.28 && centerSkinRatio >= 0.42) {
+        const eyeCandidates = [];
+        for (let y = 10; y <= 28; y += 2) {
+          for (let x = 10; x <= 38; x++) {
+            const idx = y * 48 + x;
+            if (lumArr[idx] < 75 && skinArr[idx - 1] && skinArr[idx + 1]) {
+              eyeCandidates.push({ x, y });
+            }
+          }
+        }
+        let eyePair = null;
+        for (let i = 0; i < eyeCandidates.length; i++) {
+          for (let j = i + 1; j < eyeCandidates.length; j++) {
+            const e1 = eyeCandidates[i], e2 = eyeCandidates[j];
+            const dx = Math.abs(e1.x - e2.x);
+            const dy = Math.abs(e1.y - e2.y);
+            if (dy <= 2 && dx >= 7 && dx <= 18) {
+              eyePair = { dx, midX: (e1.x + e2.x) / 2, midY: (e1.y + e2.y) / 2 };
               break;
             }
           }
-          if (hasPriceTagPatch) break;
+          if (eyePair) break;
+        }
+        if (eyePair) {
+          const mouthY = Math.round(eyePair.midY + eyePair.dx * 0.9);
+          if (mouthY < 44) {
+            for (let x = Math.round(eyePair.midX - 3); x <= Math.round(eyePair.midX + 3); x++) {
+              const idx = mouthY * 48 + x;
+              if (lumArr[idx] < 110 && skinArr[idx]) {
+                isFace = true;
+                break;
+              }
+            }
+          }
         }
       }
 
@@ -4735,7 +4741,12 @@ function startLiveCameraAnalysis() {
         isFace,
         maxHRun,
         hasVerticalAboveRail,
-        hasPriceTagPatch
+        hasPriceTagPatch,
+        hasBarcodePatch,
+        hasCoolerSignature,
+        hasFreshSignature,
+        hasBakerySignature,
+        hasAisleSignature
       });
     } catch (e) {}
   }, 320);
@@ -4768,20 +4779,34 @@ function updateLiveCameraHud(stats) {
   const maxHRun = typeof stats === 'object' ? (stats.maxHRun || 0) : 0;
   const hasVerticalAboveRail = typeof stats === 'object' ? Boolean(stats.hasVerticalAboveRail) : false;
   const hasPriceTagPatch = typeof stats === 'object' ? Boolean(stats.hasPriceTagPatch) : false;
+  const hasBarcodePatch = typeof stats === 'object' ? Boolean(stats.hasBarcodePatch) : false;
+  const hasCoolerSignature = typeof stats === 'object' ? Boolean(stats.hasCoolerSignature) : false;
+  const hasFreshSignature = typeof stats === 'object' ? Boolean(stats.hasFreshSignature) : false;
+  const hasBakerySignature = typeof stats === 'object' ? Boolean(stats.hasBakerySignature) : false;
+  const hasAisleSignature = typeof stats === 'object' ? Boolean(stats.hasAisleSignature) : false;
 
   const isDark = avgLum < 30;
   const isWashout = avgLum > 235;
   const isMonotone = stdDev < 13;
   const isKeyboardOrScreen = avgSat < 0.14 && edgeDensity > 0.16;
 
-  // Витрина: горизонтальная балка >= 20 px с вертикальными упаковками (строго без лиц)
-  const isRetailShelf = !isFace && maxHRun >= 20 && hasVerticalAboveRail;
+  // Распознавание подлинных объектов сети (строго без лиц)
+  const isRetailShelf = !isFace && maxHRun >= 18 && hasVerticalAboveRail;
   const isRetailTag = !isFace && hasPriceTagPatch;
+  const isBarcode = !isFace && hasBarcodePatch;
+  const isCooler = !isFace && hasCoolerSignature;
+  const isFresh = !isFace && hasFreshSignature;
+  const isBakery = !isFace && hasBakerySignature;
+  const isAisle = !isFace && hasAisleSignature;
+
+  const setCornerColor = (colorClass) => {
+    corners.forEach(c => {
+      c.className = c.className.replace(/border-[a-z]+-\d+(\/\d+)?/, colorClass);
+    });
+  };
 
   if (isFace) {
-    corners.forEach(c => {
-      c.className = c.className.replace(/border-[a-z]+-\d+(\/\d+)?/, 'border-rose-500');
-    });
+    setCornerColor('border-rose-500');
     centerText.className = 'px-2.5 py-0.5 rounded-full bg-rose-950/80 backdrop-blur-xs text-[9px] font-mono font-bold text-rose-300 border border-rose-500/40 shadow-sm transition-colors';
     centerText.innerHTML = '<i class="fa-solid fa-user mr-1"></i>В кадре лицо — наведите на полку';
     if (lightText) lightText.textContent = 'Свет: В норме';
@@ -4789,26 +4814,20 @@ function updateLiveCameraHud(stats) {
     if (focusText) focusText.textContent = 'Фокус: Человек (не витрина)';
     if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-rose-950/80 border border-rose-500/40 text-rose-300 flex items-center gap-0.5';
   } else if (isDark) {
-    corners.forEach(c => {
-      c.className = c.className.replace(/border-[a-z]+-\d+(\/\d+)?/, 'border-rose-500');
-    });
+    setCornerColor('border-rose-500');
     centerText.className = 'px-2.5 py-0.5 rounded-full bg-rose-950/80 backdrop-blur-xs text-[9px] font-mono font-bold text-rose-300 border border-rose-500/40 shadow-sm transition-colors';
     centerText.innerHTML = '<i class="fa-solid fa-moon mr-1"></i>Слишком темно / объектив закрыт';
     if (lightText) lightText.textContent = 'Свет: Тёмно';
     if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-rose-950/80 border border-rose-500/40 text-rose-300 flex items-center gap-0.5';
     if (focusText) focusText.textContent = 'Фокус: --';
   } else if (isWashout) {
-    corners.forEach(c => {
-      c.className = c.className.replace(/border-[a-z]+-\d+(\/\d+)?/, 'border-amber-400');
-    });
+    setCornerColor('border-amber-400');
     centerText.className = 'px-2.5 py-0.5 rounded-full bg-amber-950/80 backdrop-blur-xs text-[9px] font-mono font-bold text-amber-300 border border-amber-500/40 shadow-sm transition-colors';
     centerText.innerHTML = '<i class="fa-solid fa-sun mr-1"></i>Засвет / сильный блик';
     if (lightText) lightText.textContent = 'Свет: Пересвет';
     if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-amber-950/80 border border-amber-500/40 text-amber-300 flex items-center gap-0.5';
   } else if (isMonotone) {
-    corners.forEach(c => {
-      c.className = c.className.replace(/border-[a-z]+-\d+(\/\d+)?/, 'border-slate-500');
-    });
+    setCornerColor('border-slate-500');
     centerText.className = 'px-2.5 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-xs text-[9px] font-mono font-bold text-slate-300 border border-slate-600/40 shadow-sm transition-colors';
     centerText.innerHTML = '<i class="fa-solid fa-arrows-to-eye mr-1"></i>Пустой фон (снят пол или стена)';
     if (lightText) lightText.textContent = 'Свет: В норме';
@@ -4816,39 +4835,71 @@ function updateLiveCameraHud(stats) {
     if (focusText) focusText.textContent = 'Фокус: Однотонно';
     if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-white/10 text-slate-300 flex items-center gap-0.5';
   } else if (isKeyboardOrScreen) {
-    corners.forEach(c => {
-      c.className = c.className.replace(/border-[a-z]+-\d+(\/\d+)?/, 'border-amber-400');
-    });
+    setCornerColor('border-amber-400');
     centerText.className = 'px-2.5 py-0.5 rounded-full bg-amber-950/80 backdrop-blur-xs text-[9px] font-mono font-bold text-amber-300 border border-amber-500/40 shadow-sm transition-colors';
     centerText.innerHTML = '<i class="fa-solid fa-laptop mr-1"></i>Клавиатура / экран (не витрина)';
     if (lightText) lightText.textContent = 'Свет: В норме';
     if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-white/10 text-slate-300 flex items-center gap-0.5';
     if (focusText) focusText.textContent = 'Фокус: Не витрина';
     if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-amber-950/80 border border-amber-500/40 text-amber-300 flex items-center gap-0.5';
-  } else if (isRetailShelf) {
-    corners.forEach(c => {
-      c.className = c.className.replace(/border-[a-z]+-\d+(\/\d+)?/, 'border-emerald-400');
-    });
+  } else if (isRetailTag) {
+    setCornerColor('border-amber-400');
+    centerText.className = 'px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-xs text-[9px] font-mono font-bold text-amber-300 border border-amber-500/30 shadow-sm transition-colors';
+    centerText.innerHTML = '<i class="fa-solid fa-tag mr-1"></i>Ценник / акция в фокусе';
+    if (lightText) lightText.textContent = 'Свет: В норме';
+    if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-amber-500/30 text-amber-300 flex items-center gap-0.5';
+    if (focusText) focusText.textContent = 'Фокус: Ценник найден ✓';
+    if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-amber-500/30 text-amber-300 flex items-center gap-0.5';
+  } else if (isBarcode) {
+    setCornerColor('border-sky-400');
+    centerText.className = 'px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-xs text-[9px] font-mono font-bold text-sky-300 border border-sky-500/30 shadow-sm transition-colors';
+    centerText.innerHTML = '<i class="fa-solid fa-barcode mr-1"></i>Штрихкод / маркировка';
+    if (lightText) lightText.textContent = 'Свет: В норме';
+    if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-sky-500/30 text-sky-300 flex items-center gap-0.5';
+    if (focusText) focusText.textContent = 'Фокус: Штрихкод найден ✓';
+    if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-sky-500/30 text-sky-300 flex items-center gap-0.5';
+  } else if (isCooler) {
+    setCornerColor('border-cyan-400');
+    centerText.className = 'px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-xs text-[9px] font-mono font-bold text-cyan-300 border border-cyan-500/30 shadow-sm transition-colors';
+    centerText.innerHTML = '<i class="fa-solid fa-snowflake mr-1"></i>Холодильная витрина / бонета';
+    if (lightText) lightText.textContent = 'Свет: В норме';
+    if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-cyan-500/30 text-cyan-300 flex items-center gap-0.5';
+    if (focusText) focusText.textContent = 'Фокус: Холод найден ✓';
+    if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-cyan-500/30 text-cyan-300 flex items-center gap-0.5';
+  } else if (isFresh) {
+    setCornerColor('border-emerald-400');
     centerText.className = 'px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-xs text-[9px] font-mono font-bold text-emerald-300 border border-emerald-500/30 shadow-sm transition-colors';
-    centerText.innerHTML = '<i class="fa-solid fa-check mr-1"></i>Полочный стеллаж в фокусе';
+    centerText.innerHTML = '<i class="fa-solid fa-apple-whole mr-1"></i>Фреш-зона: фрукты и овощи';
+    if (lightText) lightText.textContent = 'Свет: В норме';
+    if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-emerald-500/30 text-emerald-300 flex items-center gap-0.5';
+    if (focusText) focusText.textContent = 'Фокус: Фреш найден ✓';
+    if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-emerald-500/30 text-emerald-300 flex items-center gap-0.5';
+  } else if (isBakery) {
+    setCornerColor('border-orange-400');
+    centerText.className = 'px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-xs text-[9px] font-mono font-bold text-orange-300 border border-orange-500/30 shadow-sm transition-colors';
+    centerText.innerHTML = '<i class="fa-solid fa-bread-slice mr-1"></i>Пекарня / кулинария в фокусе';
+    if (lightText) lightText.textContent = 'Свет: В норме';
+    if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-orange-500/30 text-orange-300 flex items-center gap-0.5';
+    if (focusText) focusText.textContent = 'Фокус: Выпечка найдена ✓';
+    if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-orange-500/30 text-orange-300 flex items-center gap-0.5';
+  } else if (isRetailShelf) {
+    setCornerColor('border-emerald-400');
+    centerText.className = 'px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-xs text-[9px] font-mono font-bold text-emerald-300 border border-emerald-500/30 shadow-sm transition-colors';
+    centerText.innerHTML = '<i class="fa-solid fa-layer-group mr-1"></i>Полочный стеллаж в фокусе';
     if (lightText) lightText.textContent = 'Свет: В норме';
     if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-emerald-500/30 text-emerald-300 flex items-center gap-0.5';
     if (focusText) focusText.textContent = 'Фокус: Полка найдена ✓';
     if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-emerald-500/30 text-emerald-300 flex items-center gap-0.5';
-  } else if (isRetailTag) {
-    corners.forEach(c => {
-      c.className = c.className.replace(/border-[a-z]+-\d+(\/\d+)?/, 'border-emerald-400');
-    });
-    centerText.className = 'px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-xs text-[9px] font-mono font-bold text-emerald-300 border border-emerald-500/30 shadow-sm transition-colors';
-    centerText.innerHTML = '<i class="fa-solid fa-tag mr-1"></i>Ценник в фокусе';
+  } else if (isAisle) {
+    setCornerColor('border-blue-400');
+    centerText.className = 'px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-xs text-[9px] font-mono font-bold text-blue-300 border border-blue-500/30 shadow-sm transition-colors';
+    centerText.innerHTML = '<i class="fa-solid fa-store mr-1"></i>Торговый зал сети «Санта»';
     if (lightText) lightText.textContent = 'Свет: В норме';
-    if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-emerald-500/30 text-emerald-300 flex items-center gap-0.5';
-    if (focusText) focusText.textContent = 'Фокус: Ценник найден ✓';
-    if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-emerald-500/30 text-emerald-300 flex items-center gap-0.5';
+    if (lightChip) lightChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-blue-500/30 text-blue-300 flex items-center gap-0.5';
+    if (focusText) focusText.textContent = 'Фокус: Торговый зал ✓';
+    if (focusChip) focusChip.className = 'px-1.5 py-0.2 rounded bg-black/60 border border-blue-500/30 text-blue-300 flex items-center gap-0.5';
   } else {
-    corners.forEach(c => {
-      c.className = c.className.replace(/border-[a-z]+-\d+(\/\d+)?/, 'border-slate-500');
-    });
+    setCornerColor('border-slate-500');
     centerText.className = 'px-2.5 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-xs text-[9px] font-mono font-bold text-slate-300 border border-slate-600/40 shadow-sm transition-colors';
     centerText.innerHTML = '<i class="fa-solid fa-camera mr-1"></i>Наведите на витрину, полку или ценник';
     if (lightText) lightText.textContent = 'Свет: В норме';
@@ -4910,12 +4961,24 @@ window.openPhotoInspectionModal = function (idx) {
     if (audit.shelfVerified) {
       varianceVal.textContent = 'Полочный стеллаж сети';
       varianceVal.className = 'font-bold text-emerald-400';
-    } else if (audit.productPackageDetected) {
-      varianceVal.textContent = 'Упаковка товара';
-      varianceVal.className = 'font-bold text-sky-400';
+    } else if (audit.coolerDetected) {
+      varianceVal.textContent = 'Холодильная витрина / бонета';
+      varianceVal.className = 'font-bold text-cyan-400';
+    } else if (audit.freshDetected) {
+      varianceVal.textContent = 'Фреш-зона: фрукты / овощи';
+      varianceVal.className = 'font-bold text-emerald-400';
+    } else if (audit.bakeryDetected) {
+      varianceVal.textContent = 'Пекарня / выпечка';
+      varianceVal.className = 'font-bold text-orange-400';
     } else if (audit.priceTagDetected) {
       varianceVal.textContent = 'Ценник / шелфтокер';
       varianceVal.className = 'font-bold text-amber-400';
+    } else if (audit.barcodeDetected) {
+      varianceVal.textContent = 'Штрихкод / маркировка';
+      varianceVal.className = 'font-bold text-sky-400';
+    } else if (audit.productPackageDetected) {
+      varianceVal.textContent = 'Упаковка товара сети';
+      varianceVal.className = 'font-bold text-sky-400';
     } else {
       varianceVal.textContent = 'Бытовой фон (не витрина)';
       varianceVal.className = 'font-bold text-rose-400';
@@ -4937,12 +5000,24 @@ window.openPhotoInspectionModal = function (idx) {
     if (audit.shelfVerified) {
       edgesVal.textContent = 'Полка и выкладка опознаны ✓';
       edgesVal.className = 'font-bold text-emerald-400';
-    } else if (audit.productPackageDetected) {
-      edgesVal.textContent = 'Контур товара опознан ✓';
-      edgesVal.className = 'font-bold text-sky-400';
+    } else if (audit.coolerDetected) {
+      edgesVal.textContent = 'Контур охлаждаемой витрины ✓';
+      edgesVal.className = 'font-bold text-cyan-400';
+    } else if (audit.freshDetected) {
+      edgesVal.textContent = 'Выкладка свежих продуктов ✓';
+      edgesVal.className = 'font-bold text-emerald-400';
+    } else if (audit.bakeryDetected) {
+      edgesVal.textContent = 'Витрина выпечки и кулинарии ✓';
+      edgesVal.className = 'font-bold text-orange-400';
     } else if (audit.priceTagDetected) {
       edgesVal.textContent = 'Ценник опознан ✓';
       edgesVal.className = 'font-bold text-amber-400';
+    } else if (audit.barcodeDetected) {
+      edgesVal.textContent = 'Штрихкод опознан ✓';
+      edgesVal.className = 'font-bold text-sky-400';
+    } else if (audit.productPackageDetected) {
+      edgesVal.textContent = 'Контур товара опознан ✓';
+      edgesVal.className = 'font-bold text-sky-400';
     } else {
       edgesVal.textContent = 'Витрина и товар не обнаружены ❌';
       edgesVal.className = 'font-bold text-rose-400';
@@ -6126,83 +6201,6 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
         const skinRatio = skinPixels / pixelCount;
         const centerSkinRatio = centerSkinPixels / (90 * 100);
 
-        // Строгий биометрический поиск лица: требует пары симметричных глаз И рта (деревянные столы, картон и полы исключены)
-        let isFaceDetected = false;
-        if (isNativeFace) {
-          isFaceDetected = true;
-        } else if (skinRatio <= 0.78 && skinRatio >= 0.08 && centerSkinRatio >= 0.18) {
-          const eyeCandidates = [];
-          for (let wy = Math.round(size * 0.18); wy <= Math.round(size * 0.65); wy += 3) {
-            for (let wx = Math.round(size * 0.15); wx <= Math.round(size * 0.85); wx += 3) {
-              const pidx = wy * size + wx;
-              if (lumMap[pidx] < 85) {
-                let skinAround = 0;
-                for (let dy = -3; dy <= 3; dy++) {
-                  for (let dx = -3; dx <= 3; dx++) {
-                    const px = wx + dx, py = wy + dy;
-                    if (px >= 0 && px < size && py >= 0 && py < size) {
-                      if (skinMap[py * size + px]) skinAround++;
-                    }
-                  }
-                }
-                if (skinAround >= 16) {
-                  const tooClose = eyeCandidates.some(c => Math.hypot(c.x - wx, c.y - wy) < 7);
-                  if (!tooClose) eyeCandidates.push({ x: wx, y: wy });
-                }
-              }
-            }
-          }
-
-          let validEyePair = null;
-          for (let i = 0; i < eyeCandidates.length; i++) {
-            for (let j = i + 1; j < eyeCandidates.length; j++) {
-              const e1 = eyeCandidates[i], e2 = eyeCandidates[j];
-              const dx = Math.abs(e1.x - e2.x);
-              const dy = Math.abs(e1.y - e2.y);
-              if (dy <= 7 && dx >= Math.round(size * 0.10) && dx <= Math.round(size * 0.50)) {
-                validEyePair = {
-                  e1: e1.x < e2.x ? e1 : e2,
-                  e2: e1.x < e2.x ? e2 : e1,
-                  dx,
-                  midX: (e1.x + e2.x) / 2,
-                  midY: (e1.y + e2.y) / 2
-                };
-                break;
-              }
-            }
-            if (validEyePair) break;
-          }
-
-          if (validEyePair) {
-            const mouthMinY = Math.round(validEyePair.midY + validEyePair.dx * 0.55);
-            const mouthMaxY = Math.round(validEyePair.midY + validEyePair.dx * 1.9);
-            let mouthFound = false;
-            for (let wy = Math.max(0, mouthMinY); wy <= Math.min(size - 2, mouthMaxY); wy += 2) {
-              for (let wx = Math.round(validEyePair.midX - validEyePair.dx * 0.40); wx <= Math.round(validEyePair.midX + validEyePair.dx * 0.40); wx += 2) {
-                const pidx = wy * size + wx;
-                if (lumMap[pidx] < 125) {
-                  let skinAround = 0;
-                  for (let dy = -2; dy <= 2; dy++) {
-                    for (let dx = -4; dx <= 4; dx++) {
-                      const px = wx + dx, py = wy + dy;
-                      if (px >= 0 && px < size && py >= 0 && py < size) {
-                        if (skinMap[py * size + px]) skinAround++;
-                      }
-                    }
-                  }
-                  if (skinAround >= 12) {
-                    mouthFound = true;
-                    break;
-                  }
-                }
-              }
-              if (mouthFound) break;
-            }
-            if (mouthFound) {
-              isFaceDetected = true;
-            }
-          }
-        }
 
         // Дисперсия яркости (однородность фона)
         let lumVariance = 0;
@@ -6264,43 +6262,19 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
           issues.push('Кадр пустой и однотонный (снят пол, потолок или пустая стена)');
         }
 
-        // 4. НЕГАТИВНЫЙ ФИЛЬТР: ЛИЦО / ЧЕЛОВЕК / СЕЛФИ
-        if (isFaceDetected) {
-          issues.push('В кадре обнаружено лицо. Пожалуйста, сфотографируйте торговую витрину сети «Санта», полку с товаром или ценник');
-          boundingBoxes.push({
-            label: 'Лицо / человек (не витрина)',
-            color: '#f43f5e',
-            x: 25,
-            y: 20,
-            w: 50,
-            h: 60
-          });
-        }
-
-        // 5. Проверка смазанности в движении
-        if (sharpnessScore < 20 && lumStdDev >= 13 && !isFaceDetected) {
-          issues.push('Кадр сильно смазан в движении — зафиксируйте камеру');
-        }
-
-        // 6. НЕГАТИВНЫЙ ФИЛЬТР: КЛАВИАТУРА / НОУТБУК
-        if (avgSat < 0.14 && hEdgeDensity > 0.05 && vEdgeDensity > 0.05 && edgeDensity > 0.15 && !isFaceDetected) {
-          issues.push('Обнаружена клавиатура/компьютер. Сфотографируйте торговую полку с товаром или ценник');
-        }
-
-        // 7. НЕГАТИВНЫЙ ФИЛЬТР: ЭКРАН МОНИТОРА / СМАРТФОНА
-        const bRatio = bTotal / (rTotal + gTotal + bTotal + 1e-5);
-        if (avgSat < 0.15 && bRatio > 0.40 && edgeDensity < 0.07 && lumStdDev > 16 && !isFaceDetected) {
-          issues.push('Обнаружен экран монитора. Сфотографируйте реальный товар на полке в магазине');
-        }
-
         // --- ДЕТЕКЦИЯ ПОДЛИННЫХ ОБЪЕКТОВ ТОРГОВОГО ЗАЛА ---
         let shelfVerified = false;
         let priceTagDetected = false;
         let barcodeDetected = false;
         let productPackageDetected = false;
+        let coolerDetected = false;
+        let freshDetected = false;
+        let bakeryDetected = false;
+        let brandDetected = false;
+        let hospitalityDetected = false;
+        let aisleDetected = false;
 
-        // Если в кадре лицо — НЕМЕДЛЕННО блокируем любые ложные детекции полок и ценников
-        if (!isFaceDetected) {
+        {
           // А. НЕПРЕРЫВНЫЕ ГОРИЗОНТАЛЬНЫЕ БАЛКИ ПОЛОК + ВЕРТИКАЛЬНЫЕ ФЕЙСИНГИ ТОВАРА
           const shelfCandidateRows = [];
           for (let y = 20; y < size - 20; y++) {
@@ -6501,6 +6475,11 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
           let brestLitovskCount = 0;
           let bremorNavyCount = 0;
           let promoYellowCount = 0;
+          let coolerBluePixels = 0;
+          let freshGreenPixels = 0;
+          let freshRedOrangePixels = 0;
+          let freshYellowPixels = 0;
+          let bakeryGoldenPixels = 0;
 
           for (let i = 0; i < data.length; i += 4) {
             const r = data[i], g = data[i + 1], b = data[i + 2];
@@ -6514,6 +6493,16 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
             if (r < 45 && g >= 45 && g <= 115 && b >= 95 && b <= 180) bremorNavyCount++;
             // 5. Промо-ценник «Ай да цена» / «Санта Шок» (ярко-жёлтый)
             if (r >= 215 && g >= 175 && b <= 60) promoYellowCount++;
+            // 6. Холодильники / бонеты (холодный сине-белый спектр)
+            if (b > r + 15 && b > g - 10 && (r + g + b) > 170) coolerBluePixels++;
+            // 7. Фреш-зелень (огурцы, яблоки, салат)
+            if (g > r + 14 && g > b + 14 && g > 55) freshGreenPixels++;
+            // 8. Фреш-томаты / цитрусовые
+            if (r > 155 && g > 45 && g < 135 && b < 65) freshRedOrangePixels++;
+            // 9. Фреш-бананы / лимоны
+            if (r > 175 && g > 150 && b < 85) freshYellowPixels++;
+            // 10. Пекарня и свежая выпечка (румяная корочка батонов, хлеба, пирогов)
+            if (r >= 135 && r <= 235 && g >= 75 && g <= 155 && b >= 20 && b <= 85 && (r - g) >= 30) bakeryGoldenPixels++;
           }
 
           const totalPix = pixelCount;
@@ -6526,24 +6515,197 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
           }
 
           if (shelfVerified || priceTagDetected || barcodeDetected) {
-            if (savushkinGreenCount / totalPix >= 0.03) {
+            if (savushkinGreenCount / totalPix >= 0.025) {
+              brandDetected = true;
               detected.push('Молочная продукция «Савушкин продукт»');
             }
-            if (brestLitovskCount / totalPix >= 0.03) {
+            if (brestLitovskCount / totalPix >= 0.025) {
+              brandDetected = true;
               detected.push('Сыры / масло «Брест-Литовск»');
             }
-            if (bremorNavyCount / totalPix >= 0.03) {
+            if (bremorNavyCount / totalPix >= 0.025) {
+              brandDetected = true;
               detected.push('Рыбная продукция «Санта Бремор» (BREMOR)');
             }
             if (santaCyanCount / totalPix >= 0.02) {
+              brandDetected = true;
               detected.push('Фирменная витрина сети «Санта»');
+            }
+          }
+
+          // Холодильные витрины / бонеты
+          if (coolerBluePixels / totalPix >= 0.07) {
+            coolerDetected = true;
+            productPackageDetected = true;
+            detected.push('Охлаждаемая витрина / бонета заморозки');
+            boundingBoxes.push({
+              label: 'Холодильная витрина',
+              color: '#06b6d4',
+              x: 15,
+              y: 20,
+              w: 70,
+              h: 60
+            });
+          }
+
+          // Фреш-зона (овощи и фрукты)
+          const freshTotal = freshGreenPixels + freshRedOrangePixels + freshYellowPixels;
+          if (freshTotal / totalPix >= 0.08) {
+            freshDetected = true;
+            productPackageDetected = true;
+            detected.push('Свежие фрукты и овощи (Фреш-зона)');
+            boundingBoxes.push({
+              label: 'Фреш-зона: фрукты / овощи',
+              color: '#059669',
+              x: 15,
+              y: 20,
+              w: 70,
+              h: 60
+            });
+          }
+
+          // Пекарня и свежая выпечка (хлеб, багеты, кулинария)
+          if (bakeryGoldenPixels / totalPix >= 0.08) {
+            bakeryDetected = true;
+            productPackageDetected = true;
+            detected.push('Свежая выпечка / отдел пекарни сети');
+            boundingBoxes.push({
+              label: 'Пекарня / выпечка',
+              color: '#ea580c',
+              x: 15,
+              y: 20,
+              w: 70,
+              h: 60
+            });
+          }
+
+          // Торговый зал сети (перспектива прохода)
+          if (!shelfVerified && !priceTagDetected && !barcodeDetected && !coolerDetected && !freshDetected && !bakeryDetected && edgeDensity >= 0.08 && lumStdDev >= 18) {
+            aisleDetected = true;
+            detected.push('Торговый зал магазина сети «Санта»');
+            boundingBoxes.push({
+              label: 'Торговый зал',
+              color: '#3b82f6',
+              x: 10,
+              y: 10,
+              w: 80,
+              h: 80
+            });
+          }
+        }
+
+        // ОБЩИЙ РЕТЕЙЛ-СИГНАЛ: если найден хотя бы один атрибут магазина/товара
+        const hasRetailSignature = shelfVerified || priceTagDetected || barcodeDetected || coolerDetected || freshDetected || bakeryDetected || brandDetected || hospitalityDetected || aisleDetected;
+
+        // ДЕТЕКЦИЯ ЛИЦА СТРОГО ПРИ ОТСУТСТВИИ ОБЪЕКТОВ СЕТИ
+        let isFaceDetected = false;
+        if (!hasRetailSignature) {
+          if (isNativeFace) {
+            isFaceDetected = true;
+          } else if (skinRatio >= 0.14 && skinRatio <= 0.70 && centerSkinRatio >= 0.28) {
+            const eyeCandidates = [];
+            for (let wy = Math.round(size * 0.20); wy <= Math.round(size * 0.60); wy += 3) {
+              for (let wx = Math.round(size * 0.18); wx <= Math.round(size * 0.82); wx += 3) {
+                const pidx = wy * size + wx;
+                if (lumMap[pidx] < 80) {
+                  let skinAround = 0;
+                  for (let dy = -3; dy <= 3; dy++) {
+                    for (let dx = -3; dx <= 3; dx++) {
+                      const px = wx + dx, py = wy + dy;
+                      if (px >= 0 && px < size && py >= 0 && py < size) {
+                        if (skinMap[py * size + px]) skinAround++;
+                      }
+                    }
+                  }
+                  if (skinAround >= 18) {
+                    const tooClose = eyeCandidates.some(c => Math.hypot(c.x - wx, c.y - wy) < 8);
+                    if (!tooClose) eyeCandidates.push({ x: wx, y: wy });
+                  }
+                }
+              }
+            }
+
+            let validEyePair = null;
+            for (let i = 0; i < eyeCandidates.length; i++) {
+              for (let j = i + 1; j < eyeCandidates.length; j++) {
+                const e1 = eyeCandidates[i], e2 = eyeCandidates[j];
+                const dx = Math.abs(e1.x - e2.x);
+                const dy = Math.abs(e1.y - e2.y);
+                if (dy <= 5 && dx >= Math.round(size * 0.14) && dx <= Math.round(size * 0.44)) {
+                  validEyePair = {
+                    e1: e1.x < e2.x ? e1 : e2,
+                    e2: e1.x < e2.x ? e2 : e1,
+                    dx,
+                    midX: (e1.x + e2.x) / 2,
+                    midY: (e1.y + e2.y) / 2
+                  };
+                  break;
+                }
+              }
+              if (validEyePair) break;
+            }
+
+            if (validEyePair) {
+              const mouthMinY = Math.round(validEyePair.midY + validEyePair.dx * 0.65);
+              const mouthMaxY = Math.round(validEyePair.midY + validEyePair.dx * 1.6);
+              let mouthFound = false;
+              for (let wy = Math.max(0, mouthMinY); wy <= Math.min(size - 2, mouthMaxY); wy += 2) {
+                for (let wx = Math.round(validEyePair.midX - validEyePair.dx * 0.35); wx <= Math.round(validEyePair.midX + validEyePair.dx * 0.35); wx += 2) {
+                  const pidx = wy * size + wx;
+                  if (lumMap[pidx] < 115) {
+                    let skinAround = 0;
+                    for (let dy = -2; dy <= 2; dy++) {
+                      for (let dx = -4; dx <= 4; dx++) {
+                        const px = wx + dx, py = wy + dy;
+                        if (px >= 0 && px < size && py >= 0 && py < size) {
+                          if (skinMap[py * size + px]) skinAround++;
+                        }
+                      }
+                    }
+                    if (skinAround >= 14) {
+                      mouthFound = true;
+                      break;
+                    }
+                  }
+                }
+                if (mouthFound) break;
+              }
+              if (mouthFound) {
+                isFaceDetected = true;
+              }
             }
           }
         }
 
+        // НЕГАТИВНЫЕ ФИЛЬТРЫ И ДЕФЕКТЫ
+        if (isFaceDetected) {
+          issues.push('В кадре обнаружено лицо. Пожалуйста, сфотографируйте торговую витрину сети «Санта», полку с товаром или ценник');
+          boundingBoxes.push({
+            label: 'Лицо / человек (не витрина)',
+            color: '#f43f5e',
+            x: 25,
+            y: 20,
+            w: 50,
+            h: 60
+          });
+        }
+
+        if (sharpnessScore < 20 && lumStdDev >= 13 && !isFaceDetected && !hasRetailSignature) {
+          issues.push('Кадр сильно смазан в движении — зафиксируйте камеру');
+        }
+
+        if (avgSat < 0.14 && hEdgeDensity > 0.05 && vEdgeDensity > 0.05 && edgeDensity > 0.15 && !hasRetailSignature && !isFaceDetected) {
+          issues.push('Обнаружена клавиатура/компьютер. Сфотографируйте торговую полку с товаром или ценник');
+        }
+
+        const bRatio = bTotal / (rTotal + gTotal + bTotal + 1e-5);
+        if (avgSat < 0.15 && bRatio > 0.40 && edgeDensity < 0.07 && lumStdDev > 16 && !hasRetailSignature && !isFaceDetected) {
+          issues.push('Обнаружен экран монитора. Сфотографируйте реальный товар на полке в магазине');
+        }
+
         const cat = String(categoryHint || (window.currentModalPayload && window.currentModalPayload.categoryTitle) || '').toLowerCase();
         if (cat.includes('срок') || cat.includes('годн') || cat.includes('просроч')) {
-          if (sharpnessScore >= 48) {
+          if (sharpnessScore >= 45) {
             detected.push('Зона маркировки даты');
           } else {
             issues.push('Снимите дату годности на упаковке ближе и резче');
@@ -6569,8 +6731,6 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
         }
 
         // СТРОГОЕ ГЕЙТИРОВАНИЕ ПОДЛИННОСТИ СНИМКА
-        const hasRetailSignature = shelfVerified || priceTagDetected || barcodeDetected;
-
         if (!hasRetailSignature && issues.length === 0) {
           issues.push('В кадре не обнаружена торговая витрина, полка или товар. Сфотографируйте стеллаж с продукцией или ценник');
         }
@@ -6590,6 +6750,12 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
           priceTagDetected,
           productPackageDetected,
           barcodeDetected,
+          coolerDetected,
+          freshDetected,
+          bakeryDetected,
+          brandDetected,
+          hospitalityDetected,
+          aisleDetected,
           sharpness: sharpnessScore,
           avgLum: Math.round(avgLum),
           lightingText,
@@ -7984,23 +8150,6 @@ function updateAllUI() {
 
   const headerStoreEl = document.getElementById('headerActiveStoreName');
   if (headerStoreEl) headerStoreEl.textContent = activeStore;
-
-  const dailyDone = Math.max(0, Number(window.state.dailyStoreReports) || 0);
-  const dailyTarget = 3;
-  const dailyPill = document.getElementById('dailyProgressPill');
-  const dailyBar = document.getElementById('dailyProgressBar');
-  if (dailyPill) {
-    dailyPill.textContent = `${Math.min(dailyDone, dailyTarget)} / ${dailyTarget}`;
-    if (dailyDone >= dailyTarget) {
-      dailyPill.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-white shrink-0 shadow-xs';
-    } else {
-      dailyPill.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 shrink-0';
-    }
-  }
-  if (dailyBar) {
-    const pct = Math.min(100, Math.round((dailyDone / dailyTarget) * 100));
-    dailyBar.style.width = `${pct}%`;
-  }
 
   if (typeof window.updateOfflineSyncUI === 'function') window.updateOfflineSyncUI();
 

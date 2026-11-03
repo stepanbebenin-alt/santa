@@ -877,23 +877,6 @@ function updateAllUI() {
   const headerStoreEl = document.getElementById('headerActiveStoreName');
   if (headerStoreEl) headerStoreEl.textContent = activeStore;
 
-  const dailyDone = Math.max(0, Number(window.state.dailyStoreReports) || 0);
-  const dailyTarget = 3;
-  const dailyPill = document.getElementById('dailyProgressPill');
-  const dailyBar = document.getElementById('dailyProgressBar');
-  if (dailyPill) {
-    dailyPill.textContent = `${Math.min(dailyDone, dailyTarget)} / ${dailyTarget}`;
-    if (dailyDone >= dailyTarget) {
-      dailyPill.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-white shrink-0 shadow-xs';
-    } else {
-      dailyPill.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 shrink-0';
-    }
-  }
-  if (dailyBar) {
-    const pct = Math.min(100, Math.round((dailyDone / dailyTarget) * 100));
-    dailyBar.style.width = `${pct}%`;
-  }
-
   if (typeof window.updateOfflineSyncUI === 'function') window.updateOfflineSyncUI();
 
   // Собираем реальный список участников рейтинга (с нуля!)

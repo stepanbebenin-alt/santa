@@ -198,83 +198,6 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
         const skinRatio = skinPixels / pixelCount;
         const centerSkinRatio = centerSkinPixels / (90 * 100);
 
-        // Строгий биометрический поиск лица: требует пары симметричных глаз И рта (деревянные столы, картон и полы исключены)
-        let isFaceDetected = false;
-        if (isNativeFace) {
-          isFaceDetected = true;
-        } else if (skinRatio <= 0.78 && skinRatio >= 0.08 && centerSkinRatio >= 0.18) {
-          const eyeCandidates = [];
-          for (let wy = Math.round(size * 0.18); wy <= Math.round(size * 0.65); wy += 3) {
-            for (let wx = Math.round(size * 0.15); wx <= Math.round(size * 0.85); wx += 3) {
-              const pidx = wy * size + wx;
-              if (lumMap[pidx] < 85) {
-                let skinAround = 0;
-                for (let dy = -3; dy <= 3; dy++) {
-                  for (let dx = -3; dx <= 3; dx++) {
-                    const px = wx + dx, py = wy + dy;
-                    if (px >= 0 && px < size && py >= 0 && py < size) {
-                      if (skinMap[py * size + px]) skinAround++;
-                    }
-                  }
-                }
-                if (skinAround >= 16) {
-                  const tooClose = eyeCandidates.some(c => Math.hypot(c.x - wx, c.y - wy) < 7);
-                  if (!tooClose) eyeCandidates.push({ x: wx, y: wy });
-                }
-              }
-            }
-          }
-
-          let validEyePair = null;
-          for (let i = 0; i < eyeCandidates.length; i++) {
-            for (let j = i + 1; j < eyeCandidates.length; j++) {
-              const e1 = eyeCandidates[i], e2 = eyeCandidates[j];
-              const dx = Math.abs(e1.x - e2.x);
-              const dy = Math.abs(e1.y - e2.y);
-              if (dy <= 7 && dx >= Math.round(size * 0.10) && dx <= Math.round(size * 0.50)) {
-                validEyePair = {
-                  e1: e1.x < e2.x ? e1 : e2,
-                  e2: e1.x < e2.x ? e2 : e1,
-                  dx,
-                  midX: (e1.x + e2.x) / 2,
-                  midY: (e1.y + e2.y) / 2
-                };
-                break;
-              }
-            }
-            if (validEyePair) break;
-          }
-
-          if (validEyePair) {
-            const mouthMinY = Math.round(validEyePair.midY + validEyePair.dx * 0.55);
-            const mouthMaxY = Math.round(validEyePair.midY + validEyePair.dx * 1.9);
-            let mouthFound = false;
-            for (let wy = Math.max(0, mouthMinY); wy <= Math.min(size - 2, mouthMaxY); wy += 2) {
-              for (let wx = Math.round(validEyePair.midX - validEyePair.dx * 0.40); wx <= Math.round(validEyePair.midX + validEyePair.dx * 0.40); wx += 2) {
-                const pidx = wy * size + wx;
-                if (lumMap[pidx] < 125) {
-                  let skinAround = 0;
-                  for (let dy = -2; dy <= 2; dy++) {
-                    for (let dx = -4; dx <= 4; dx++) {
-                      const px = wx + dx, py = wy + dy;
-                      if (px >= 0 && px < size && py >= 0 && py < size) {
-                        if (skinMap[py * size + px]) skinAround++;
-                      }
-                    }
-                  }
-                  if (skinAround >= 12) {
-                    mouthFound = true;
-                    break;
-                  }
-                }
-              }
-              if (mouthFound) break;
-            }
-            if (mouthFound) {
-              isFaceDetected = true;
-            }
-          }
-        }
 
         // Дисперсия яркости (однородность фона)
         let lumVariance = 0;
@@ -336,43 +259,19 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
           issues.push('Кадр пустой и однотонный (снят пол, потолок или пустая стена)');
         }
 
-        // 4. НЕГАТИВНЫЙ ФИЛЬТР: ЛИЦО / ЧЕЛОВЕК / СЕЛФИ
-        if (isFaceDetected) {
-          issues.push('В кадре обнаружено лицо. Пожалуйста, сфотографируйте торговую витрину сети «Санта», полку с товаром или ценник');
-          boundingBoxes.push({
-            label: 'Лицо / человек (не витрина)',
-            color: '#f43f5e',
-            x: 25,
-            y: 20,
-            w: 50,
-            h: 60
-          });
-        }
-
-        // 5. Проверка смазанности в движении
-        if (sharpnessScore < 20 && lumStdDev >= 13 && !isFaceDetected) {
-          issues.push('Кадр сильно смазан в движении — зафиксируйте камеру');
-        }
-
-        // 6. НЕГАТИВНЫЙ ФИЛЬТР: КЛАВИАТУРА / НОУТБУК
-        if (avgSat < 0.14 && hEdgeDensity > 0.05 && vEdgeDensity > 0.05 && edgeDensity > 0.15 && !isFaceDetected) {
-          issues.push('Обнаружена клавиатура/компьютер. Сфотографируйте торговую полку с товаром или ценник');
-        }
-
-        // 7. НЕГАТИВНЫЙ ФИЛЬТР: ЭКРАН МОНИТОРА / СМАРТФОНА
-        const bRatio = bTotal / (rTotal + gTotal + bTotal + 1e-5);
-        if (avgSat < 0.15 && bRatio > 0.40 && edgeDensity < 0.07 && lumStdDev > 16 && !isFaceDetected) {
-          issues.push('Обнаружен экран монитора. Сфотографируйте реальный товар на полке в магазине');
-        }
-
         // --- ДЕТЕКЦИЯ ПОДЛИННЫХ ОБЪЕКТОВ ТОРГОВОГО ЗАЛА ---
         let shelfVerified = false;
         let priceTagDetected = false;
         let barcodeDetected = false;
         let productPackageDetected = false;
+        let coolerDetected = false;
+        let freshDetected = false;
+        let bakeryDetected = false;
+        let brandDetected = false;
+        let hospitalityDetected = false;
+        let aisleDetected = false;
 
-        // Если в кадре лицо — НЕМЕДЛЕННО блокируем любые ложные детекции полок и ценников
-        if (!isFaceDetected) {
+        {
           // А. НЕПРЕРЫВНЫЕ ГОРИЗОНТАЛЬНЫЕ БАЛКИ ПОЛОК + ВЕРТИКАЛЬНЫЕ ФЕЙСИНГИ ТОВАРА
           const shelfCandidateRows = [];
           for (let y = 20; y < size - 20; y++) {
@@ -573,6 +472,11 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
           let brestLitovskCount = 0;
           let bremorNavyCount = 0;
           let promoYellowCount = 0;
+          let coolerBluePixels = 0;
+          let freshGreenPixels = 0;
+          let freshRedOrangePixels = 0;
+          let freshYellowPixels = 0;
+          let bakeryGoldenPixels = 0;
 
           for (let i = 0; i < data.length; i += 4) {
             const r = data[i], g = data[i + 1], b = data[i + 2];
@@ -586,6 +490,16 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
             if (r < 45 && g >= 45 && g <= 115 && b >= 95 && b <= 180) bremorNavyCount++;
             // 5. Промо-ценник «Ай да цена» / «Санта Шок» (ярко-жёлтый)
             if (r >= 215 && g >= 175 && b <= 60) promoYellowCount++;
+            // 6. Холодильники / бонеты (холодный сине-белый спектр)
+            if (b > r + 15 && b > g - 10 && (r + g + b) > 170) coolerBluePixels++;
+            // 7. Фреш-зелень (огурцы, яблоки, салат)
+            if (g > r + 14 && g > b + 14 && g > 55) freshGreenPixels++;
+            // 8. Фреш-томаты / цитрусовые
+            if (r > 155 && g > 45 && g < 135 && b < 65) freshRedOrangePixels++;
+            // 9. Фреш-бананы / лимоны
+            if (r > 175 && g > 150 && b < 85) freshYellowPixels++;
+            // 10. Пекарня и свежая выпечка (румяная корочка батонов, хлеба, пирогов)
+            if (r >= 135 && r <= 235 && g >= 75 && g <= 155 && b >= 20 && b <= 85 && (r - g) >= 30) bakeryGoldenPixels++;
           }
 
           const totalPix = pixelCount;
@@ -598,24 +512,197 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
           }
 
           if (shelfVerified || priceTagDetected || barcodeDetected) {
-            if (savushkinGreenCount / totalPix >= 0.03) {
+            if (savushkinGreenCount / totalPix >= 0.025) {
+              brandDetected = true;
               detected.push('Молочная продукция «Савушкин продукт»');
             }
-            if (brestLitovskCount / totalPix >= 0.03) {
+            if (brestLitovskCount / totalPix >= 0.025) {
+              brandDetected = true;
               detected.push('Сыры / масло «Брест-Литовск»');
             }
-            if (bremorNavyCount / totalPix >= 0.03) {
+            if (bremorNavyCount / totalPix >= 0.025) {
+              brandDetected = true;
               detected.push('Рыбная продукция «Санта Бремор» (BREMOR)');
             }
             if (santaCyanCount / totalPix >= 0.02) {
+              brandDetected = true;
               detected.push('Фирменная витрина сети «Санта»');
+            }
+          }
+
+          // Холодильные витрины / бонеты
+          if (coolerBluePixels / totalPix >= 0.07) {
+            coolerDetected = true;
+            productPackageDetected = true;
+            detected.push('Охлаждаемая витрина / бонета заморозки');
+            boundingBoxes.push({
+              label: 'Холодильная витрина',
+              color: '#06b6d4',
+              x: 15,
+              y: 20,
+              w: 70,
+              h: 60
+            });
+          }
+
+          // Фреш-зона (овощи и фрукты)
+          const freshTotal = freshGreenPixels + freshRedOrangePixels + freshYellowPixels;
+          if (freshTotal / totalPix >= 0.08) {
+            freshDetected = true;
+            productPackageDetected = true;
+            detected.push('Свежие фрукты и овощи (Фреш-зона)');
+            boundingBoxes.push({
+              label: 'Фреш-зона: фрукты / овощи',
+              color: '#059669',
+              x: 15,
+              y: 20,
+              w: 70,
+              h: 60
+            });
+          }
+
+          // Пекарня и свежая выпечка (хлеб, багеты, кулинария)
+          if (bakeryGoldenPixels / totalPix >= 0.08) {
+            bakeryDetected = true;
+            productPackageDetected = true;
+            detected.push('Свежая выпечка / отдел пекарни сети');
+            boundingBoxes.push({
+              label: 'Пекарня / выпечка',
+              color: '#ea580c',
+              x: 15,
+              y: 20,
+              w: 70,
+              h: 60
+            });
+          }
+
+          // Торговый зал сети (перспектива прохода)
+          if (!shelfVerified && !priceTagDetected && !barcodeDetected && !coolerDetected && !freshDetected && !bakeryDetected && edgeDensity >= 0.08 && lumStdDev >= 18) {
+            aisleDetected = true;
+            detected.push('Торговый зал магазина сети «Санта»');
+            boundingBoxes.push({
+              label: 'Торговый зал',
+              color: '#3b82f6',
+              x: 10,
+              y: 10,
+              w: 80,
+              h: 80
+            });
+          }
+        }
+
+        // ОБЩИЙ РЕТЕЙЛ-СИГНАЛ: если найден хотя бы один атрибут магазина/товара
+        const hasRetailSignature = shelfVerified || priceTagDetected || barcodeDetected || coolerDetected || freshDetected || bakeryDetected || brandDetected || hospitalityDetected || aisleDetected;
+
+        // ДЕТЕКЦИЯ ЛИЦА СТРОГО ПРИ ОТСУТСТВИИ ОБЪЕКТОВ СЕТИ
+        let isFaceDetected = false;
+        if (!hasRetailSignature) {
+          if (isNativeFace) {
+            isFaceDetected = true;
+          } else if (skinRatio >= 0.14 && skinRatio <= 0.70 && centerSkinRatio >= 0.28) {
+            const eyeCandidates = [];
+            for (let wy = Math.round(size * 0.20); wy <= Math.round(size * 0.60); wy += 3) {
+              for (let wx = Math.round(size * 0.18); wx <= Math.round(size * 0.82); wx += 3) {
+                const pidx = wy * size + wx;
+                if (lumMap[pidx] < 80) {
+                  let skinAround = 0;
+                  for (let dy = -3; dy <= 3; dy++) {
+                    for (let dx = -3; dx <= 3; dx++) {
+                      const px = wx + dx, py = wy + dy;
+                      if (px >= 0 && px < size && py >= 0 && py < size) {
+                        if (skinMap[py * size + px]) skinAround++;
+                      }
+                    }
+                  }
+                  if (skinAround >= 18) {
+                    const tooClose = eyeCandidates.some(c => Math.hypot(c.x - wx, c.y - wy) < 8);
+                    if (!tooClose) eyeCandidates.push({ x: wx, y: wy });
+                  }
+                }
+              }
+            }
+
+            let validEyePair = null;
+            for (let i = 0; i < eyeCandidates.length; i++) {
+              for (let j = i + 1; j < eyeCandidates.length; j++) {
+                const e1 = eyeCandidates[i], e2 = eyeCandidates[j];
+                const dx = Math.abs(e1.x - e2.x);
+                const dy = Math.abs(e1.y - e2.y);
+                if (dy <= 5 && dx >= Math.round(size * 0.14) && dx <= Math.round(size * 0.44)) {
+                  validEyePair = {
+                    e1: e1.x < e2.x ? e1 : e2,
+                    e2: e1.x < e2.x ? e2 : e1,
+                    dx,
+                    midX: (e1.x + e2.x) / 2,
+                    midY: (e1.y + e2.y) / 2
+                  };
+                  break;
+                }
+              }
+              if (validEyePair) break;
+            }
+
+            if (validEyePair) {
+              const mouthMinY = Math.round(validEyePair.midY + validEyePair.dx * 0.65);
+              const mouthMaxY = Math.round(validEyePair.midY + validEyePair.dx * 1.6);
+              let mouthFound = false;
+              for (let wy = Math.max(0, mouthMinY); wy <= Math.min(size - 2, mouthMaxY); wy += 2) {
+                for (let wx = Math.round(validEyePair.midX - validEyePair.dx * 0.35); wx <= Math.round(validEyePair.midX + validEyePair.dx * 0.35); wx += 2) {
+                  const pidx = wy * size + wx;
+                  if (lumMap[pidx] < 115) {
+                    let skinAround = 0;
+                    for (let dy = -2; dy <= 2; dy++) {
+                      for (let dx = -4; dx <= 4; dx++) {
+                        const px = wx + dx, py = wy + dy;
+                        if (px >= 0 && px < size && py >= 0 && py < size) {
+                          if (skinMap[py * size + px]) skinAround++;
+                        }
+                      }
+                    }
+                    if (skinAround >= 14) {
+                      mouthFound = true;
+                      break;
+                    }
+                  }
+                }
+                if (mouthFound) break;
+              }
+              if (mouthFound) {
+                isFaceDetected = true;
+              }
             }
           }
         }
 
+        // НЕГАТИВНЫЕ ФИЛЬТРЫ И ДЕФЕКТЫ
+        if (isFaceDetected) {
+          issues.push('В кадре обнаружено лицо. Пожалуйста, сфотографируйте торговую витрину сети «Санта», полку с товаром или ценник');
+          boundingBoxes.push({
+            label: 'Лицо / человек (не витрина)',
+            color: '#f43f5e',
+            x: 25,
+            y: 20,
+            w: 50,
+            h: 60
+          });
+        }
+
+        if (sharpnessScore < 20 && lumStdDev >= 13 && !isFaceDetected && !hasRetailSignature) {
+          issues.push('Кадр сильно смазан в движении — зафиксируйте камеру');
+        }
+
+        if (avgSat < 0.14 && hEdgeDensity > 0.05 && vEdgeDensity > 0.05 && edgeDensity > 0.15 && !hasRetailSignature && !isFaceDetected) {
+          issues.push('Обнаружена клавиатура/компьютер. Сфотографируйте торговую полку с товаром или ценник');
+        }
+
+        const bRatio = bTotal / (rTotal + gTotal + bTotal + 1e-5);
+        if (avgSat < 0.15 && bRatio > 0.40 && edgeDensity < 0.07 && lumStdDev > 16 && !hasRetailSignature && !isFaceDetected) {
+          issues.push('Обнаружен экран монитора. Сфотографируйте реальный товар на полке в магазине');
+        }
+
         const cat = String(categoryHint || (window.currentModalPayload && window.currentModalPayload.categoryTitle) || '').toLowerCase();
         if (cat.includes('срок') || cat.includes('годн') || cat.includes('просроч')) {
-          if (sharpnessScore >= 48) {
+          if (sharpnessScore >= 45) {
             detected.push('Зона маркировки даты');
           } else {
             issues.push('Снимите дату годности на упаковке ближе и резче');
@@ -641,8 +728,6 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
         }
 
         // СТРОГОЕ ГЕЙТИРОВАНИЕ ПОДЛИННОСТИ СНИМКА
-        const hasRetailSignature = shelfVerified || priceTagDetected || barcodeDetected;
-
         if (!hasRetailSignature && issues.length === 0) {
           issues.push('В кадре не обнаружена торговая витрина, полка или товар. Сфотографируйте стеллаж с продукцией или ценник');
         }
@@ -662,6 +747,12 @@ window.auditPhotoWithAI = function (item, categoryHint, brandHint) {
           priceTagDetected,
           productPackageDetected,
           barcodeDetected,
+          coolerDetected,
+          freshDetected,
+          bakeryDetected,
+          brandDetected,
+          hospitalityDetected,
+          aisleDetected,
           sharpness: sharpnessScore,
           avgLum: Math.round(avgLum),
           lightingText,
