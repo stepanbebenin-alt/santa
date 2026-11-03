@@ -3563,7 +3563,14 @@ window.addEventListener('DOMContentLoaded', function () {
   backToBrandsHub(true);
   playSplashScreen();
 
-  if (!isAuthed) {
+  let viewParam = null;
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hashVal = window.location.hash ? window.location.hash.replace('#', '').replace('view=', '') : null;
+    viewParam = urlParams.get('view') || hashVal;
+  } catch (e) {}
+
+  if (!isAuthed && (!viewParam || viewParam === 'login')) {
     setTimeout(() => {
       openOnboardingModal(false);
     }, 1100);
@@ -3573,6 +3580,46 @@ window.addEventListener('DOMContentLoaded', function () {
   initCloudRealtimeSync();
   pollServerState();
   setInterval(pollServerState, 4000);
+
+  if (viewParam) {
+    const splash = document.getElementById('splashScreen');
+    if (splash) splash.style.display = 'none';
+    if (viewParam === 'login') {
+      window.isSessionAuthenticated = false;
+      setTimeout(() => openOnboardingModal(false), 50);
+    } else {
+      window.isSessionAuthenticated = true;
+      const onb = document.getElementById('onboardingModal');
+      if (onb) onb.classList.add('hidden');
+      setTimeout(() => {
+        const onb2 = document.getElementById('onboardingModal');
+        if (onb2) onb2.classList.add('hidden');
+        if (viewParam === 'home') {
+          switchMainTab('home');
+          backToBrandsHub(true);
+        } else if (viewParam === 'claims_retail') {
+          openBrandClaimsPage('santa');
+        } else if (viewParam === 'claims_bremor') {
+          openBrandClaimsPage('bremor');
+        } else if (viewParam === 'claims_savushkin') {
+          openBrandClaimsPage('savushkin');
+        } else if (viewParam === 'scanner') {
+          switchMainTab('scanner');
+        } else if (viewParam === 'missions') {
+          switchMainTab('missions');
+        } else if (viewParam === 'stoplist') {
+          switchMainTab('stoplist');
+        } else if (viewParam === 'leaderboard') {
+          switchMainTab('leaderboard');
+        } else if (viewParam === 'settings') {
+          switchMainTab('settings');
+        } else if (viewParam === 'express') {
+          switchMainTab('home');
+          openExpressReportModal();
+        }
+      }, 50);
+    }
+  }
 });
 
 
