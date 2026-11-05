@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: pediasense
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20.20.1
+      - key: PORT
+        value: 10000

@@ -430,7 +430,7 @@
           <div class="text-[10px] font-black uppercase tracking-[0.28em] text-[#213567]/60 mt-1.5">Х О Л Д И Н Г</div>
         </div>
 
-        <h1 id="splashAppTitle" class="text-3xl font-black tracking-tight">Санта.Радар</h1>
+        <h1 id="splashAppTitle" class="text-3xl font-black tracking-tight">Скажи Санте</h1>
         <p class="text-sm text-white/85 font-medium mt-1.5 max-w-[260px]">
           Мониторинг качества и стандартов торговой сети
         </p>
@@ -497,7 +497,7 @@
           <div class="min-w-0 flex-1 overflow-hidden">
             <div class="flex items-center gap-1.5 min-w-0">
               <button onclick="navigateHomeFull()" id="headerAppTitleText" class="font-black text-sm tracking-tight leading-none hover:opacity-90 transition shrink-0" title="Вернуться на главный экран">
-                Санта.Радар
+                Скажи Санте
               </button>
               <button onclick="toggleUserRoleQuick()" id="roleHeaderBadge" title="Переключить режим" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition cursor-pointer flex items-center gap-1 shrink-0">
                 <span>Наблюдатель</span>
@@ -681,7 +681,7 @@
           <div id="globalSearchResultsContainer" class="hidden space-y-2"></div>
 
           <div class="px-1 flex items-center justify-between">
-            <span class="text-xs font-extrabold text-slate-700">Выберите бренд для сигнала</span>
+            <span class="text-xs font-extrabold text-slate-700">Выберите направление для сигнала</span>
             <span class="text-[11px] font-semibold text-slate-400">5 направлений</span>
           </div>
 
@@ -789,12 +789,12 @@
           <div class="bg-white p-3 rounded-[22px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between gap-2">
             <button onclick="backToBrandsHub()" class="py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs flex items-center gap-2 transition active:scale-95 shrink-0">
               <i class="fa-solid fa-arrow-left text-[11px]"></i>
-              <span>К брендам</span>
+              <span>К подразделениям</span>
             </button>
 
             <div id="activeBrandBanner" class="flex items-center gap-2 overflow-hidden">
               <div class="w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden border border-slate-100">
-                <img id="activeBrandLogoImg" src="data:image/png;base64,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" alt="Бренд" class="max-h-full max-w-full object-contain" />
+                <img id="activeBrandLogoImg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOYAAABoCAYAAADl0IwTAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAA+vSURBVHhe7Z0JdFTVGce/7Oskk30hJCGJhEUDYVGWoEEMBlFBVIoeqvZUq56KLWoR3HuOFrR1ad2raD1uHFsFUQsIIqsBQlhlTRCE7PtGdkLv97hpJjPvvnlvFnkz8/3OmZN3X5LZ7vvfe7/tPq/zDCAIQld4858EQegIEiZB6BASJkHoEBImQegQEiZB6BASJkHoEBImQegQEiZB6BASJkHoEBImQegQEiZB6BASJkHoEBImQegQEiZB6BASJkHoEBImQegQEiZB6BASJkHoEBImQegQEiZB6BASJkHoEBImQegQEiZB6BASJkHoEBImQegQEiZB6BASJkHoELp3yUVi0ZoS2HWmmbfkCfD1hpFxITA5xQgzMiMh2M+H/4Zwd0iYF4n89/fBuuP1vGWdQCbSm0bGwLL8dEg2BvKzhLviNGE2dvXC+qoO2FLdCcdauuFoczdUdvRCtL83RAV4QzR75MUHwYQofxgf6Q8GP89aVWsVZh9hAb7wzV1ZkJNq5GcId8Thwnz3RCt8U9EOq0rb+RnrxAf6wB1DQuCO1BAYGe7Hz7o3tgoTCQ/0hYL7x8Lw2BB+hnA3HDZNfVHaBlM3VsE9hfWaRIlUdpyDF440Q/a6Sli4p4GfJUQ0dfTArA8PQlv3OX6GcDccMmPevaselv/Uylv2M9roD3vz43nLPflobyWU1IkHsLLmTig43QSHqs7yM5Y8Nz0NHpuayluEO2G3MC9dUwGHmrp5y3FEMlu0bk4Sb3km2DPv7i6He1celY7NiQ31h/Ilk8HH24ufIdwFu5ay8avKnCJKpL6rF+Zur+Utz8SL6e2e8YnwbF4aPzOQ6tYu2FBCS393xGZh/oHZglXMNlQiOdgXbk8JgTfGRcKB/ARouWUwbJ4WB6+MiYA7h4RAXKByXO7fZ9rI5mQszEmGIIHXeuupRn5EuBM2LWX//GMTPMMeSizMNMBL2RG8Jc+psz3w6vEWeLW4Fbp7xW9jZU4MzE4K4i3PZG95i+T0MScxLACGRgfzFuEuaBbmwcZumLShElp75P8tjI3sKyZFwYwE9ULa09AFMzbXQLVgBh4X6Q+F093bGUQQpmheyr54rFkoytQQX2i6OUmTKJExEf6w/PJI3rJkd30XfPKz2DupRPu583C8pQcKajuhvN0zwgstPb2wv7FLGvBqOrV95rrOXjjY1A1F7DvvVFjF2As+M4bJ8HUOsMHema/limiaMddVdED+5mresqTk+kRID/XlLe389WgzLNonbzNdGx8Ia3NjeUuZMibAD06ehf8wG3UvuzhNCfLxgkvD/WBqXCDcxezcKH9veKNEPtTzzKXh/Gggn7PnxYvXnJyYALiGPa8aPjp1FkpaLZemeexzTo4O4K1+0HwQ8TR7nzvrumDp4SYmyG7JRDAlJsAbbhwUDLcmB0vfoynN3b3w8rEWaeAqYM+BbVPGstXKZez7wvd0d3ooP2sbeKHhNfQpG2RXlrZLA4gpg4N9YDQbpG9KCob5KcHwVXm7JFpzrmTf89Uqv2dXRZMwHz/QCH85LJ94vTTLCItHhPGWbaCdmbK6HCoES1p0IF1mFGcGVTBBPs0u4Pd/agXBpD4AXy+Au9JCpWwlOc7PS+ZHA7m9oJZdXG281c+jw8Ng2Sh1qXL5m6phXWUHb/WD/4/PY47Irs+NDYBp7CJdyvqlja0OrPFb/Lx8dYLONXxetZ51FMR7V0TZNPiuLG2DJw40weFmda+FAg1lHbStppOf6edxdp09y643d0bTUnarzJeE4FJ04TADb9mOn7cXzBksdmRsY6O6CJwZR6+rhHeYyNSIEsG/E4kSUT1iXVS84MmDTapEiWAiCIahUJT4U0u4awvr/4yvyxVnb3PwbS0oaoA522pVixLZx/pTTpSIyo/q0jhEmDi6BTgoyP0YGw1xFpB7iDoKL5iJ66uEziNbcYWw/aZqy1nXGn2itBWcubEwwRqon5u31cBrxS0XTjgIT8inUC3MkhZLe6iPTIPtdqU5iUE+8P3VcbKPjydG8b/qB+2p2VtrnOI88ICB2Wbu3FHHj8T8aV8jfFmmLW9aDZ7gJ1ItzOJW8QiZZfTnR788t/1QBw1dA50Ichh8veGKKH9IYMJXiysOzOhAwZjvYmanzkvWHt/E1c+DQw1wX0ao5IgSgc4mkaMOwVXMi0eVC8ERtPOz2WsOZYM7HquBZkwTlGbM0REXp1Trs9NtsKNObHcOYiJ8dWwEnLg+EZpvSYIdefFQPmsQnLlxEDyXZQR/N+rhW5ltjs6x0+yzYULG0lFG+HRSNFtpqPNkowca/3fvtfHw9zER8Oa4SPg2N1bomUY+FoSwcEJTytjyYV87in/39Hhou3Uw7GGveWxmopQZtoK95wwrziUP0KV6YWLepghNhqoDQTe/CExKODAjAR64xABpZh2dxGYVtGV35MVJtaCuDorys8nRsh7r3NhASQBKoPgw5IKzrTl4/sMJliYEgnFhuYER7V6MocqB4apNzCxB8WMoBh1+fQSy3/2KzfJ78uMVY+HW10euj2pNZRrEs+KPTkpkV0J0USDoZsdZAytUlMAl1C520bryxIlOMRSlEiiA/AT5ZSn+P4pPifmpIVJIRg45h9wXZ8R2JeZNY7xXCTQ7Vl8ZI5kenopqYQ4LEwvTWRUmSmyuFi9hF48Il2ZFNeAs4au0HJDBS7CYwuyk3I1Vqh676uVnFGcNErF2rgxEKws5YW6ukfcUjzL6S0kdakB7Mz1U/ppz4XFUNaqFiRewUVDh4MgZs7azF6ZurJZ2QzB/YGC/j1qFVLPZg5yb8H5e4K8903ZOGjDUPEQOK2d5HNHbbQ9yy1ykySxTCKnukP9scwZ7diGCFlQLE8mNk1+CoIdOlD+rlX+dbJVslE3s4jV/mHp/sV5TRHKIfRehOxJo51SM9p9aRIMO5lIT6tAkzAlR8sLEhOmH9tpfN4naflOQt4rkmOSQoh0poktjnoFoSHHS5OX2iPqmU2PKTq8gW5TimGags0QEpsL9oJAypwaMe/0kk9iNoAPD1GmgFI88IXgOESKJ2zfHeC6ivhH1rQhvge3vRlEuIZqEOT0+UNp5QMSsrTX8SDtYsbF4vzhg/TuzygYlZxRWJVwMsAIDPZxqHqJEcHe45kR944wsIHdFkzCRhzPDhEsVdNzErSqTiqm1gDGv+3eL91jF2dJcmJg4LxqZceYtbVO3nsWKFtGSSSs4o2NMUM1DFER3h1XaDYnyTp4jzd3wnobdFLGW1lPRLEwMYj8yTFzehYnkWWsrYNkR6+lYmOf6MLNNJ6yvghomahFPjJCPs80VVKJgh87ZViPtBq8E/h53TnCQ34rgXM+EKXIWPVDUIDkLlcDuwH2GsVTMU9EsTASXYuYFt+YsYcvSpC/LJIE8z75krFTHItwNlR2SaOcX1EmCfOlYi+J+P38cahDu97NkRJiUSSJHIXu9UWsr4e2SVouRt4u93uvFLZDxTTl8V6W9OoNQBm+B8VCmfBkg9sWU76okZ+HPZgXdyEbWH+O/rYRHFcwaDzAxbRMmgrsJ4P4+SuBOAlipjrbjOPZlh39eCnmbqiXRYp6ltV32JjGb7eUx4g29cJc9XBaKON3WA/exJXLsylKpAgXfB8ZC074ql0Zu3EaDcA5YNC+KfeJAjOmUqawfruIivbewXhLktO+rpUFcCU9Y4NgsTAT391G7lYZW0I7dfk0cb4lZNDwMbrSSUIAxVnQ84MyNOw/ggKEGWuHajpRWNyVGuKLpA6tQUKT/PNEq7e2kBgqXqGD91FjZrTDsAZ0HWGmgFqxI0LoBmBo8YcnkTLCE7EsmzhCFmLMtULhEJbhPzec50VJCtD2Es6Ux7ueCCcxawFH5a/Y/aNdo7TN8TcJ5YE3nzrx4q6Vccnhy3zjsk89JCpZ2GXhnfKSm2SuYjabXsb9/a1wkHJmZYPMmSziKvpgdASduSJRirda2OsFQC/79BjbjE84Fb614dGaitJFXlsJman3cwEwTrC2dKQi7eAJ231RIBOayrqm4sP0gxjcx6Rw9crhdZHSAj3TjWnTuTI4JgGANeZhqwc2pvmJ25c66C/vJYv4m5mpmGHyl7Stx+0MU71lmfxbWy2csYS2jHBiPk3Nc4S0hzGs/ReD3Ui+TO4gVFXJOE6W9fUTv0xRr219aw97XNwX3C0KnIGYCYd9gPwwP84V0gx9MjPL/f4KC6HtOYf04xM3zbp0mTIIgbIeE6eJg7609Xgc7zzRDUVkLxIT4wehEA8wYGgmX2HBPk13seTadbIC95a1wrvc8jB1kgCmpRpiUYn1WJRwHCdOFwZvb3r7iEGw5KR+Mn58dD2/NzoQQf3HCfx/t3b2wYPVxWL67nJ8ZyMTkcFhx20hINjonPEYMhITpopxq6IDLXy+EmrPKeclXDTHCd3dnK97ctrOnF6a8vQcKS5XTKJPCA2D/g5dDZLB1Bw5hHxQrcEFwKJ37yY9WRYlsZrPp8t0VvCXPI/8tsSpKpLSpExatOcFbhDMhYbogq4/UygopIyoIwgIsvZWvbD/DjyzB5fBrBaW81U8UmxUTDJb1tx/sqYBGmft0Eo6FhOmCrCu23AX9k3kjofiRiVD31BT4zdgEfvYCR6rPwulG+XDHhhLLcruHcpKh6vEcKF0yGZbkpvCzF+jpPQ/ri8UleoRjIGG6IBXNA3NK0ea7bdSFvGJfZkv2HZtymIlTDvPnQn4/cZBkk+IOAgsmWaZGotAJ50LCdEHCAwcuVxvau6UlaR8YNjEnyE/eM2v+XIipiOVEaAwi54+zIWG6IBhbNAWdQZPfLIKP91XC4rUn4LFvBzpocBbNTpS/6ey4JMu6yXmfHoJ//FAKb+wog9kfHuBn+7lyiHvfm1IPULjEBalo6YKU57dDt1kBuIhZI6Jh1a+zeGsg2PuZL+2A4lp1uwWMSTRA0YLxvEU4C5oxXRD0li6YqK4sDu3Ep6YN4S1LcCO6Z/PSeMs6L1yXwY8IZ0LCdFGW5adD/lD5m/30gQ6c924ZJs1ySszNioUnr07lLTF/Y6Kcli7eUYJwHLSUdWGw594vqoC3d5VJDh/MbUUignxhaloEPMHElm1FlKZg6OSFLadh26lGKUUPwXQ+zB5anJsi5cwSvwwkTDcB7c39Fa0QG+pndz4rXhHHmc15jh0MjwlRvAUj4RxImAShQ8jGJAgdQsIkCB1CwiQIHULCJAgdQsIkCB1CwiQIHULCJAgdQsIkCB1CwiQIHULCJAgdQsIkCB1CwiQIHULCJAgdQsIkCB1CwiQIHULCJAgdQsIkCB1CwiQIHULCJAgdQsIkCB1CwiQIHULCJAgdQsIkCB1CwiQI3QHwP1ky+KrJh/5vAAAAAElFTkSuQmCC" alt="Подразделение" class="max-h-full max-w-full object-contain" />
               </div>
               <span id="activeBrandBadge" class="hidden"></span>
               <span id="activeBrandSubtitle" class="hidden"></span>
@@ -961,7 +961,7 @@
       <section id="tab-scanner" class="hidden p-3.5 space-y-3.5">
         <button onclick="switchMainTab('home')" class="w-full py-2.5 px-3.5 rounded-2xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)] flex items-center justify-between text-xs font-extrabold text-[#009FE3] hover:opacity-90 transition active:scale-[0.99]">
           <span class="flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i><span>Вернуться на главный экран</span></span>
-          <span class="text-[10px] font-semibold text-slate-400">Главная • Бренды</span>
+          <span class="text-[10px] font-semibold text-slate-400">Главная • Подразделения</span>
         </button>
 
         <div class="bg-slate-900 text-white p-3.5 rounded-2xl border border-slate-800">
@@ -1033,7 +1033,7 @@
       <section id="tab-stoplist" class="hidden p-3.5 space-y-3.5">
         <button onclick="switchMainTab('home')" class="w-full py-2.5 px-3.5 rounded-2xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)] flex items-center justify-between text-xs font-extrabold text-[#009FE3] hover:opacity-90 transition active:scale-[0.99]">
           <span class="flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i><span>Вернуться на главный экран</span></span>
-          <span class="text-[10px] font-semibold text-slate-400">Главная • Бренды</span>
+          <span class="text-[10px] font-semibold text-slate-400">Главная • Подразделения</span>
         </button>
 
         <div class="bg-gradient-to-r from-rose-950 via-red-900 to-rose-950 text-white p-3.5 rounded-2xl border border-rose-700/50 shadow-md">
@@ -1061,7 +1061,7 @@
       <section id="tab-leaderboard" class="hidden px-4 py-3 space-y-3.5">
         <button onclick="switchMainTab('home')" class="w-full py-2.5 px-3.5 rounded-2xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)] flex items-center justify-between text-xs font-extrabold text-[#009FE3] hover:opacity-90 transition active:scale-[0.99]">
           <span class="flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i><span>Вернуться на главный экран</span></span>
-          <span class="text-[10px] font-semibold text-slate-400">Главная • Бренды</span>
+          <span class="text-[10px] font-semibold text-slate-400">Главная • Подразделения</span>
         </button>
 
         <!-- Hero Prize Card (Revolut Style + Real Flagship iPhone Photo) -->
@@ -1189,7 +1189,7 @@
       <section id="tab-settings" class="hidden px-4 py-3 space-y-3.5">
         <button onclick="switchMainTab('home')" class="w-full py-2.5 px-3.5 rounded-2xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)] flex items-center justify-between text-xs font-extrabold text-[#009FE3] hover:opacity-90 transition active:scale-[0.99]">
           <span class="flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i><span>Вернуться на главный экран</span></span>
-          <span class="text-[10px] font-semibold text-slate-400">Главная • Бренды</span>
+          <span class="text-[10px] font-semibold text-slate-400">Главная • Подразделения</span>
         </button>
 
         <!-- 1. Оформление: Светлая / Тёмная тема + Размер шрифта -->
@@ -1252,7 +1252,7 @@
               </div>
               <div>
                 <h3 class="text-xs font-extrabold text-slate-900">Роль и Подразделение</h3>
-                <p class="text-[10px] text-slate-400">Управление доступом к миссиям и бренду</p>
+                <p class="text-[10px] text-slate-400">Управление доступом к миссиям и подразделениям</p>
               </div>
             </div>
           </div>
@@ -1276,7 +1276,7 @@
           </div>
 
           <div>
-            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Ваше подразделение (в цветах брендов):</label>
+            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Ваше подразделение:</label>
             <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5" id="settingsDivisionTabs">
               <button type="button" onclick="setSettingsDivision('Санта Ритейл')" data-set-div="Санта Ритейл" style="background-color: #009FE3;" class="settings-div-tab py-2 px-1.5 rounded-xl text-white font-extrabold text-[10px] text-center truncate transition shadow-sm">
                 Санта Ритейл
@@ -1299,7 +1299,7 @@
           <!-- Официальная экосистема брендов (santa.by) -->
           <div class="pt-2 border-t border-slate-100 space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Бренды холдинга (santa.by)</span>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Подразделения холдинга (santa.by)</span>
               <a href="https://santa.by/brendy/" target="_blank" class="text-[10px] font-bold text-[#009FE3] hover:underline flex items-center gap-1">
                 <span>santa.by</span>
                 <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
@@ -1433,7 +1433,7 @@
           <div class="pt-2.5 flex items-center justify-between gap-2">
             <div>
               <div class="text-xs font-bold text-slate-800">Штамп GPS и даты на фото</div>
-              <div class="text-[10px] text-slate-400">Водяной знак бренда, времени и точки на снимке</div>
+              <div class="text-[10px] text-slate-400">Водяной знак подразделения, времени и точки на снимке</div>
             </div>
             <button type="button" onclick="toggleSettingSwitch('watermarkEnabled')" id="toggleBtn-watermarkEnabled" class="w-12 h-7 rounded-full bg-emerald-500 p-1 transition flex items-center justify-end">
               <span class="w-5 h-5 rounded-full bg-white shadow transform transition"></span>
@@ -1566,7 +1566,7 @@
               <span id="claimSeverityBadge" class="px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-emerald-50 text-emerald-700">Базовый</span>
             </div>
             <button type="button" onclick="toggleClaimBrandDropdown()" class="text-[10px] font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-slate-50 transition">
-              <span>Сменить бренд</span>
+              <span>Сменить подразделение</span>
               <i class="fa-solid fa-chevron-down text-[8px]"></i>
             </button>
           </div>
@@ -2311,7 +2311,7 @@
 
         <div class="space-y-2.5">
           <div>
-            <label class="font-bold text-slate-600 block mb-1.5">Выберите бренд (в фирменном цвете):</label>
+            <label class="font-bold text-slate-600 block mb-1.5">Выберите подразделение (в фирменном цвете):</label>
             <input type="hidden" id="stopBrandSelect" value="Санта Бремор" />
             <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5" id="stopModalBrandTabs">
               <button type="button" onclick="selectStopModalBrand('Санта Бремор')" data-stop-brand="Санта Бремор" style="background-color: #003865;" class="stop-brand-tab py-2 px-2 rounded-xl text-white font-extrabold text-[10px] text-center truncate transition shadow-sm ring-2 ring-slate-900">
@@ -2374,7 +2374,7 @@
 
         <div class="space-y-2.5">
           <div>
-            <label class="font-bold text-slate-600 block mb-1.5">Направление (в фирменном цвете бренда):</label>
+            <label class="font-bold text-slate-600 block mb-1.5">Направление (в фирменном цвете):</label>
             <input type="hidden" id="newMissionBrandSelect" value="Санта Ритейл" />
             <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5" id="missionModalBrandTabs">
               <button type="button" onclick="selectMissionModalBrand('Санта Ритейл')" data-mission-brand="Санта Ритейл" style="background-color: #009FE3;" class="mission-brand-tab py-2 px-2 rounded-xl text-white font-extrabold text-[10px] text-center truncate transition shadow-sm ring-2 ring-slate-900">
@@ -3545,7 +3545,7 @@ window.BRAND_CONFIG = {
           { id: 'br_ic1', label: 'Мягкое, растаявшее или сплющенное мороженое «ЮККИ» / «ТОП» / «Soletto» в ларе', points: 2, critical: true, hint: 'КРИТИЧЕСКИЙ СИГНАЛ (+2 балла): Сфотографируйте деформированное мороженое и термометр морозильного ларя.', voiceSample: 'В морозильном ларе пломбир ЮККИ и рожки ТОП мягкие на ощупь, ларь не морозит.' },
           { id: 'br_ic2', label: 'Пельмени или вареники «Бабушка Аня» смерзлись в один твердый ком в пачке', points: 2, critical: true, hint: 'КРИТИЧЕСКИЙ СИГНАЛ (+2 балла): Сфотографируйте пачку пельменей со слипшимся комом и дату партии.', voiceSample: 'В пачках пельменей Бабушка Аня продукция растаяла и повторно смерзлась в один ком.' },
           { id: 'br_ic3', label: 'Потрескавшееся тесто у пельменей, много снежной крошки или лопнувший шов пачки', points: 1, critical: false, hint: 'Сфотографируйте окошко пачки пельменей/вареников или порванный шов.', voiceSample: 'У пачки вареников Бабушка Аня разошелся боковой шов упаковки.' },
-          { id: 'br_ic4', label: 'Чужая заморозка (пельмени, котлеты, лед) свалена поверх мороженого «Санта Бремор»', points: 1, critical: false, hint: 'Сфотографируйте брендированный ларь с посторонней продукцией.', voiceSample: 'В фирменный морозильный ларь мороженого ЮККИ сверху набросали пачки замороженных овощей.' },
+          { id: 'br_ic4', label: 'Чужая заморозка (пельмени, котлеты, лед) свалена поверх мороженого «Санта Бремор»', points: 1, critical: false, hint: 'Сфотографируйте фирменный ларь с посторонней продукцией.', voiceSample: 'В фирменный морозильный ларь мороженого ЮККИ сверху набросали пачки замороженных овощей.' },
           { id: 'br_ic5', label: 'Другое (Мороженое, пельмени и блинчики)', points: 1, critical: false, isOther: true, hint: 'Сфотографируйте морозильную витрину и опишите замечание.', voiceSample: 'На морозильном ларе с мороженым отсутствуют ценники на эскимо Soletto.' }
         ]
       },
@@ -3573,7 +3573,7 @@ window.BRAND_CONFIG = {
     logoUrl: (window.SANTA_BRAND_LOGOS && window.SANTA_BRAND_LOGOS.savushkin) || 'assets/logos/savushkin.png',
     logoAlt: 'Савушкин',
     bannerClass: 'bg-[#008A3C]/10 border-[#008A3C]/30 text-slate-900',
-    subtitle: 'Контроль свежести и упаковки брендов «Савушкин», «Брест-Литовск», «Teos», «High Protein», «Оптималь», «101 зерно», «Топ» и «Свежа» во всех магазинах и деревнях РБ.',
+    subtitle: 'Контроль свежести и упаковки продукции «Савушкин», «Брест-Литовск», «Teos», «High Protein», «Оптималь», «101 зерно», «Топ» и «Свежа» во всех магазинах и деревнях РБ.',
     categories: [
       {
         title: '1. Молочные продукты: кефир, сметана, творог и сливки («Савушкин», «Брест-Литовск»)',
@@ -3623,11 +3623,11 @@ window.BRAND_CONFIG = {
         ]
       },
       {
-        title: '5. Выкладка, Бренд-блок и Холодовая цепь «Савушкин»',
+        title: '5. Выкладка, фирменный блок и Холодовая цепь «Савушкин»',
         icon: 'fa-boxes-stacked',
         items: [
           { id: 'sv_s1', label: 'Дыра на полке (Out-of-Stock): ценник «Савушкин» есть, но товар не вынесен со склада', points: 1, critical: false, hint: 'Снимите пустую полку с ценником и общий план молочной горки.', voiceSample: 'Над ценником творога Савушкин Хуторок 5% пустая дыра, товара нет.' },
-          { id: 'sv_s2', label: 'Разбитый корпоративный бренд-блок: внутри блока «Савушкин» стоят чужие марки', points: 1, critical: false, hint: 'Сфотографируйте молочную витрину общим планом.', voiceSample: 'Посреди бренд-блока йогуртов Савушкин выставлены стаканчики другого завода.' },
+          { id: 'sv_s2', label: 'Разбитый фирменный блок: внутри зоны «Савушкин» стоят чужие марки', points: 1, critical: false, hint: 'Сфотографируйте молочную витрину общим планом.', voiceSample: 'Посреди фирменного блока йогуртов Савушкин выставлены стаканчики другого завода.' },
           { id: 'sv_t1', label: 'Градусник молочной горки выше +6°C или паллета с молочкой брошена в тепле', points: 2, critical: true, hint: 'КРИТИЧЕСКИЙ СИГНАЛ (+2 балла): Сфотографируйте термометр витрины или паллету в зале.', voiceSample: 'В молочной витрине магазина термометр показывает плюс девять градусов.' },
           { id: 'sv_s4', label: 'Другое (Выкладка, цены и холод Савушкин)', points: 1, critical: false, isOther: true, hint: 'Сфотографируйте молочную витрину и опишите нюанс.', voiceSample: 'С верхней полки холодильника капает конденсат на картонные лотки с йогуртом.' }
         ]
@@ -6969,10 +6969,10 @@ window.runLocalSignalAgents = function () {
   const bestBrand = Object.keys(brandScores).sort((a, b) => brandScores[b] - brandScores[a])[0];
 
   let relevanceNote = !text
-    ? `Бренд: «${inp.brand}» • Чек-лист: ${inp.category || 'Контроль качества'}`
+    ? `Направление: «${inp.brand}» • Чек-лист: ${inp.category || 'Контроль качества'}`
     : overlap > 0
     ? `Полное соответствие направлению «${inp.brand}»`
-    : `Контекст соответствует бренду «${inp.brand}»`;
+    : `Контекст соответствует направлению «${inp.brand}»`;
 
   if (text) {
     if (brandScores[selectedBrandKey] > 0 || selectedBrandKey === 'Санта Ритейл') {
@@ -7031,7 +7031,7 @@ window.runLocalSignalAgents = function () {
     agents: [
       { key: 'evidence', icon: 'fa-camera', name: 'ИИ-Агент «Визуальный контроль и экспертиза фото»', got: evidence, max: 25, note: evidenceNote },
       { key: 'clarity', icon: 'fa-pen-nib', name: 'ИИ-Агент «Ясность и факты»', got: clarity, max: 35, note: clarityNote },
-      { key: 'relevance', icon: 'fa-bullseye', name: 'ИИ-Агент «Бренд и контекст»', got: relevance, max: 20, note: relevanceNote },
+      { key: 'relevance', icon: 'fa-bullseye', name: 'ИИ-Агент «Направление и контекст»', got: relevance, max: 20, note: relevanceNote },
       { key: 'integrity', icon: 'fa-shield-halved', name: 'ИИ-Агент «Анти-фрод фильтр»', got: integrity, max: 20, note: integrityNote }
     ]
   };
@@ -7682,7 +7682,7 @@ try {
 function createZeroDefaultState() {
   return {
     userId: 'u_' + Math.random().toString(36).slice(2, 10),
-    appTitleMode: 'Санта.Радар', // По умолчанию «Санта.Радар»
+    appTitleMode: 'Скажи Санте', // По умолчанию «Санта.Радар»
     onboarded: false,
     userName: '',
     userPhone: '',
@@ -8194,7 +8194,7 @@ function updateAllUI() {
   const totalParticipants = allPlayers.length;
 
   // Название приложения («Санта.Радар»)
-  const appTitle = window.state.appTitleMode || 'Санта.Радар';
+  const appTitle = window.state.appTitleMode || 'Скажи Санте';
   const headerTitleEl = document.getElementById('headerAppTitleText');
   if (headerTitleEl) headerTitleEl.textContent = appTitle;
   const splashTitleEl = document.getElementById('splashAppTitle');
@@ -9335,7 +9335,7 @@ window.saveCustomMission = function () {
     store,
     duration: cfg.dur,
     title,
-    description: `Целевое задание для проверки стандартов бренда «${brand}» в точке «${store}». Проверьте соответствие выкладки, сроков годности и ценников.`,
+    description: `Целевое задание для проверки стандартов подразделения «${brand}» в точке «${store}». Проверьте соответствие выкладки, сроков годности и ценников.`,
     photoGuide: 'Сделайте четкое обзорное фото витрины и крупный кадр проверяемой позиции.',
     tasks: [
       'Посетить указанную торговую точку и найти нужную секцию',
@@ -10054,7 +10054,7 @@ window.setDefaultCameraFacing = function (facing) {
 window.exportReportsToCsv = function () {
   const list = window.state.history || [];
   const rows = [
-    ['ID', 'Время', 'Сотрудник', 'Подразделение', 'Магазин', 'Бренд проверки', 'Суть сигнала / Сигнала', 'Комментарий', 'Баллы', 'Статус']
+    ['ID', 'Время', 'Сотрудник', 'Подразделение', 'Магазин', 'Направление проверки', 'Суть сигнала / Сигнала', 'Комментарий', 'Баллы', 'Статус']
   ];
   list.forEach(h => {
     rows.push([
@@ -10786,7 +10786,7 @@ function playSplashScreen(forcedName) {
   const titleEl = document.getElementById('splashAppTitle');
   if (!splash) return;
 
-  if (titleEl) titleEl.textContent = window.state.appTitleMode || 'Санта.Радар';
+  if (titleEl) titleEl.textContent = window.state.appTitleMode || 'Скажи Санте';
   splash.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
   splash.classList.add('opacity-100');
   if (bar) {

@@ -958,10 +958,10 @@ window.runLocalSignalAgents = function () {
   const bestBrand = Object.keys(brandScores).sort((a, b) => brandScores[b] - brandScores[a])[0];
 
   let relevanceNote = !text
-    ? `Бренд: «${inp.brand}» • Чек-лист: ${inp.category || 'Контроль качества'}`
+    ? `Направление: «${inp.brand}» • Чек-лист: ${inp.category || 'Контроль качества'}`
     : overlap > 0
     ? `Полное соответствие направлению «${inp.brand}»`
-    : `Контекст соответствует бренду «${inp.brand}»`;
+    : `Контекст соответствует направлению «${inp.brand}»`;
 
   if (text) {
     if (brandScores[selectedBrandKey] > 0 || selectedBrandKey === 'Санта Ритейл') {
@@ -1020,7 +1020,7 @@ window.runLocalSignalAgents = function () {
     agents: [
       { key: 'evidence', icon: 'fa-camera', name: 'ИИ-Агент «Визуальный контроль и экспертиза фото»', got: evidence, max: 25, note: evidenceNote },
       { key: 'clarity', icon: 'fa-pen-nib', name: 'ИИ-Агент «Ясность и факты»', got: clarity, max: 35, note: clarityNote },
-      { key: 'relevance', icon: 'fa-bullseye', name: 'ИИ-Агент «Бренд и контекст»', got: relevance, max: 20, note: relevanceNote },
+      { key: 'relevance', icon: 'fa-bullseye', name: 'ИИ-Агент «Направление и контекст»', got: relevance, max: 20, note: relevanceNote },
       { key: 'integrity', icon: 'fa-shield-halved', name: 'ИИ-Агент «Анти-фрод фильтр»', got: integrity, max: 20, note: integrityNote }
     ]
   };

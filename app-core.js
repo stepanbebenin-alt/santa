@@ -400,7 +400,7 @@ try {
 function createZeroDefaultState() {
   return {
     userId: 'u_' + Math.random().toString(36).slice(2, 10),
-    appTitleMode: 'Санта.Радар', // По умолчанию «Санта.Радар»
+    appTitleMode: 'Скажи Санте', // По умолчанию «Санта.Радар»
     onboarded: false,
     userName: '',
     userPhone: '',
@@ -912,7 +912,7 @@ function updateAllUI() {
   const totalParticipants = allPlayers.length;
 
   // Название приложения («Санта.Радар»)
-  const appTitle = window.state.appTitleMode || 'Санта.Радар';
+  const appTitle = window.state.appTitleMode || 'Скажи Санте';
   const headerTitleEl = document.getElementById('headerAppTitleText');
   if (headerTitleEl) headerTitleEl.textContent = appTitle;
   const splashTitleEl = document.getElementById('splashAppTitle');
@@ -2053,7 +2053,7 @@ window.saveCustomMission = function () {
     store,
     duration: cfg.dur,
     title,
-    description: `Целевое задание для проверки стандартов бренда «${brand}» в точке «${store}». Проверьте соответствие выкладки, сроков годности и ценников.`,
+    description: `Целевое задание для проверки стандартов подразделения «${brand}» в точке «${store}». Проверьте соответствие выкладки, сроков годности и ценников.`,
     photoGuide: 'Сделайте четкое обзорное фото витрины и крупный кадр проверяемой позиции.',
     tasks: [
       'Посетить указанную торговую точку и найти нужную секцию',
@@ -2772,7 +2772,7 @@ window.setDefaultCameraFacing = function (facing) {
 window.exportReportsToCsv = function () {
   const list = window.state.history || [];
   const rows = [
-    ['ID', 'Время', 'Сотрудник', 'Подразделение', 'Магазин', 'Бренд проверки', 'Суть сигнала / Сигнала', 'Комментарий', 'Баллы', 'Статус']
+    ['ID', 'Время', 'Сотрудник', 'Подразделение', 'Магазин', 'Направление проверки', 'Суть сигнала / Сигнала', 'Комментарий', 'Баллы', 'Статус']
   ];
   list.forEach(h => {
     rows.push([
@@ -3504,7 +3504,7 @@ function playSplashScreen(forcedName) {
   const titleEl = document.getElementById('splashAppTitle');
   if (!splash) return;
 
-  if (titleEl) titleEl.textContent = window.state.appTitleMode || 'Санта.Радар';
+  if (titleEl) titleEl.textContent = window.state.appTitleMode || 'Скажи Санте';
   splash.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
   splash.classList.add('opacity-100');
   if (bar) {

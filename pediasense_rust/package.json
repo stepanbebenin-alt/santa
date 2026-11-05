@@ -1,0 +1,21 @@
+{
+  "name": "pediasense",
+  "version": "1.0.0",
+  "description": "PediaSense — Clinical Illness Diary & Doctor Report",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'Build OK'"
+  },
+  "keywords": [
+    "pediasense",
+    "healthcare",
+    "diary",
+    "pediatrics"
+  ],
+  "author": "stepanbebenin-alt",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
